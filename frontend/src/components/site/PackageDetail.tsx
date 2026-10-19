@@ -1,4 +1,5 @@
-import { HIGHLIGHT_TYPES, formatPrice, type Package } from '@cleides/shared';
+import { HIGHLIGHT_TYPES, formatPrice } from '@cleides/shared/utils';
+import type { Package } from '@cleides/shared';
 import { useState } from 'react';
 import { useBodyLock } from '../../hooks/useBodyLock';
 import { useDialog } from '../../hooks/useDialog';

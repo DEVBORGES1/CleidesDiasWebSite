@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router';
 import { useAuth } from '../../contexts/AuthContext';
 import { AdminLayout } from '../../layouts/AdminLayout';
@@ -16,9 +17,10 @@ import { StepsPage } from './StepsPage';
 
 /** Bloqueia o painel para quem não estiver logado como administradora. */
 function RequireAdmin({ children }: { children: React.ReactNode }) {
-  const { status } = useAuth();
+  const { status, activate } = useAuth();
   const location = useLocation();
-  if (status === 'loading') return <SiteLoading />;
+  useEffect(() => activate(), [activate]);
+  if (status === 'loading' || status === 'idle') return <SiteLoading />;
   if (status === 'unconfigured')
     return (
       <AuthMessage
@@ -33,6 +35,8 @@ function RequireAdmin({ children }: { children: React.ReactNode }) {
 }
 
 export default function AdminApp() {
+  const { activate } = useAuth();
+  useEffect(() => activate(), [activate]);
   return (
     <Routes>
       <Route path="entrar" element={<LoginPage />} />

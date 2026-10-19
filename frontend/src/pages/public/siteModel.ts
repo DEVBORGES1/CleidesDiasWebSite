@@ -1,4 +1,5 @@
-import { instagramUrl, whatsappLink, type PublicSite } from '@cleides/shared';
+import { instagramUrl, whatsappLink } from '@cleides/shared/utils';
+import type { PublicSite } from '@cleides/shared';
 
 /** Valores derivados do conteúdo, usados por várias seções do site. */
 export function buildSiteModel(site: PublicSite) {

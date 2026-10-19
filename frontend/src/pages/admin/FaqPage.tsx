@@ -1,4 +1,5 @@
-import { CONTENT_LIMITS, plainPreview, normalizeSearch, type FaqItem, type PublicationStatus } from '@cleides/shared';
+import { CONTENT_LIMITS, plainPreview, normalizeSearch } from '@cleides/shared/utils';
+import type { FaqItem, PublicationStatus } from '@cleides/shared';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router';
@@ -11,6 +12,8 @@ import { adminApi } from '../../services/api';
 import { ApiError, errorMessage } from '../../services/http';
 import { HandledError, PageError, PageHeader, PageLoading, usePageEditors, useSectionEditor } from './common';
 import styles from './list.module.css';
+
+const EMPTY: FaqItem[] = [];
 
 interface FaqForm {
   question: string;
@@ -35,7 +38,7 @@ export function FaqPage() {
   const [saving, setSaving] = useState(false);
   const [errors, setErrors] = useState<ApiError | null>(null);
 
-  const items = query.data ?? [];
+  const items = query.data ?? EMPTY;
   const formDirty = !!form && JSON.stringify(form) !== initial;
   usePageEditors(section, {
     dirty: formDirty,

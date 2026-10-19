@@ -1,4 +1,5 @@
-import { formatPrice, type Package } from '@cleides/shared';
+import { formatPrice } from '@cleides/shared/utils';
+import type { Package } from '@cleides/shared';
 import type { SiteModel } from '../../pages/public/siteModel';
 import { FramedImage } from '../FramedImage';
 import { Icon } from '../Icon';

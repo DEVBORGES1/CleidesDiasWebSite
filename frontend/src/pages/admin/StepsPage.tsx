@@ -1,4 +1,5 @@
-import { CONTENT_LIMITS, STEP_ICONS, type ImageValue, type ProcessStep, type PublicationStatus, type StepIcon } from '@cleides/shared';
+import { CONTENT_LIMITS, STEP_ICONS } from '@cleides/shared/utils';
+import type { ImageValue, ProcessStep, PublicationStatus, StepIcon } from '@cleides/shared';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router';
@@ -14,6 +15,8 @@ import { toImageInput } from '../../services/uploads';
 import { HandledError, PageError, PageHeader, PageLoading, usePageEditors, useSectionEditor } from './common';
 import forms from './forms.module.css';
 import styles from './list.module.css';
+
+const EMPTY: ProcessStep[] = [];
 
 interface StepForm {
   title: string;
@@ -40,7 +43,7 @@ export function StepsPage() {
   const [initial, setInitial] = useState('');
   const [saving, setSaving] = useState(false);
   const [errors, setErrors] = useState<ApiError | null>(null);
-  const items = query.data ?? [];
+  const items = query.data ?? EMPTY;
   const formDirty = !!form && JSON.stringify(form) !== initial;
 
   usePageEditors(section, {

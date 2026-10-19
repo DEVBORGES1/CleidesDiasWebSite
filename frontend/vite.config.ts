@@ -24,9 +24,10 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react(), robotsTxt(env.VITE_API_URL || 'http://localhost:4000/api/v1')],
     resolve: {
-      alias: {
-        '@cleides/shared': fileURLToPath(new URL('../shared/src/index.ts', import.meta.url)),
-      },
+      alias: [
+        { find: /^@cleides\/shared\/utils$/, replacement: fileURLToPath(new URL('../shared/src/utils.ts', import.meta.url)) },
+        { find: /^@cleides\/shared$/, replacement: fileURLToPath(new URL('../shared/src/index.ts', import.meta.url)) },
+      ],
     },
     server: { port: 5173 },
     preview: { port: 4173 },

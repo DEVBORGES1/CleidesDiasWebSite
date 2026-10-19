@@ -1,4 +1,4 @@
-import { parseRichText } from '@cleides/shared';
+import { parseRichText } from '@cleides/shared/utils';
 import { useEffect, useMemo } from 'react';
 import { Link } from 'react-router';
 import { Icon } from '../../components/Icon';

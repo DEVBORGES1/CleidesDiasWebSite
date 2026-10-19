@@ -7,7 +7,7 @@
     "moduleResolution": "Bundler",
     "jsx": "react-jsx",
     "noEmit": true,
-    "allowImportingTsExtensions": false,
+    "allowImportingTsExtensions": true,
     "types": ["vite/client"],
     "customConditions": ["development"]
   },

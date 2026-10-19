@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { idSchema, text } from './common.js';
-import { IMAGE_RATIO_KEYS, type ImageRatio } from './constants.js';
+import { IMAGE_RATIO_KEYS } from './constants.js';
 
 /** Caminho de imagem estática servida pelo próprio frontend (usada nos dados de demonstração). */
 export const STATIC_IMAGE_PATTERN = /^\/images\/[\w./-]+\.(jpe?g|png|webp|avif)$/i;
@@ -41,17 +41,4 @@ export const imageSchema = z.object({
 });
 export type ImageValue = z.infer<typeof imageSchema>;
 
-/** Proporção (largura/altura) usada para desenhar o quadro da imagem. */
-export function imageAspect(img: Pick<ImageValue, 'ratio' | 'width' | 'height'> | null | undefined, fallback = 1): number {
-  if (!img) return fallback;
-  if (img.ratio && img.ratio !== 'auto') {
-    const [w, h] = img.ratio.split('/').map(Number);
-    if (w && h) return w / h;
-  }
-  if (img.width && img.height) return img.width / img.height;
-  return fallback;
-}
-
-export function ratioLabel(ratio: ImageRatio): string {
-  return { auto: 'Original', '4/5': 'Retrato', '1/1': 'Quadrado', '3/2': 'Paisagem', '16/9': 'Panorâmica' }[ratio];
-}
+export { imageAspect, ratioLabel } from './image-utils.js';

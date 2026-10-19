@@ -1,4 +1,4 @@
-import { parseRichText } from '@cleides/shared';
+import { parseRichText } from '@cleides/shared/utils';
 import { useState } from 'react';
 import type { SiteModel } from '../../pages/public/siteModel';
 import { Icon } from '../Icon';

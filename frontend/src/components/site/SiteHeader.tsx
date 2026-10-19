@@ -1,4 +1,5 @@
-import { formatPrice, ROMAN, type Package } from '@cleides/shared';
+import { formatPrice, ROMAN } from '@cleides/shared/utils';
+import type { Package } from '@cleides/shared';
 import { useState } from 'react';
 import type { SectionId } from '../../hooks/useSiteEffects';
 import type { SiteModel } from '../../pages/public/siteModel';

@@ -1,4 +1,5 @@
-import { IMAGE_UPLOAD_RULES, type ImageValue, type MediaAsset, type UploadPurpose } from '@cleides/shared';
+import { IMAGE_UPLOAD_RULES } from '@cleides/shared/utils';
+import type { ImageValue, MediaAsset, UploadPurpose } from '@cleides/shared';
 import { adminApi } from './api';
 import { ApiError } from './http';
 

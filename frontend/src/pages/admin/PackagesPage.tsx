@@ -1,4 +1,5 @@
-import { CONTENT_LIMITS, HIGHLIGHT_TYPES, formatPrice, type Package } from '@cleides/shared';
+import { CONTENT_LIMITS, HIGHLIGHT_TYPES, formatPrice } from '@cleides/shared/utils';
+import type { Package } from '@cleides/shared';
 import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -13,6 +14,8 @@ import { errorMessage } from '../../services/http';
 import { PageError, PageHeader, PageLoading, usePageEditors, useSectionEditor } from './common';
 import styles from './PackagesPage.module.css';
 
+const EMPTY: Package[] = [];
+
 type Filter = 'todos' | 'published' | 'draft';
 
 export function PackagesPage() {
@@ -23,7 +26,7 @@ export function PackagesPage() {
   const section = useSectionEditor('packages');
   usePageEditors(section);
   const [filter, setFilter] = useState<Filter>('todos');
-  const items = query.data ?? [];
+  const items = query.data ?? EMPTY;
   const shown = filter === 'todos' ? items : items.filter((p) => p.status === filter);
   const counts = { todos: items.length, published: items.filter((p) => p.status === 'published').length, draft: items.filter((p) => p.status === 'draft').length };
 

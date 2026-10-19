@@ -1,4 +1,5 @@
-import { imageAspect, type GalleryImage } from '@cleides/shared';
+import { imageAspect } from '@cleides/shared/utils';
+import type { GalleryImage } from '@cleides/shared';
 import { useMemo, useState } from 'react';
 import type { SiteModel } from '../../pages/public/siteModel';
 import { FramedImage } from '../FramedImage';

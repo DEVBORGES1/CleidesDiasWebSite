@@ -1,4 +1,5 @@
-import { imageAspect, type GalleryImage } from '@cleides/shared';
+import { imageAspect } from '@cleides/shared/utils';
+import type { GalleryImage } from '@cleides/shared';
 import { useEffect, useRef } from 'react';
 import { useBodyLock } from '../../hooks/useBodyLock';
 import { useDialog } from '../../hooks/useDialog';

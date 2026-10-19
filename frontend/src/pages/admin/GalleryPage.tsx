@@ -1,4 +1,5 @@
-import { CONTENT_LIMITS, IMAGE_UPLOAD_RULES, type GalleryImage, type ImageValue, type PublicationStatus } from '@cleides/shared';
+import { CONTENT_LIMITS, IMAGE_UPLOAD_RULES } from '@cleides/shared/utils';
+import type { GalleryImage, ImageValue, PublicationStatus } from '@cleides/shared';
 import { useQueryClient } from '@tanstack/react-query';
 import { useMemo, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
@@ -34,6 +35,8 @@ import { checkImageFile, uploadImage } from '../../services/uploads';
 import { BackLink, PageError, PageHeader, PageLoading, usePageEditors, useSectionEditor } from './common';
 import styles from './GalleryPage.module.css';
 
+const EMPTY: GalleryImage[] = [];
+
 interface UploadItem {
   key: string;
   name: string;
@@ -64,7 +67,7 @@ export function GalleryPage() {
   const [over, setOver] = useState(false);
   const [album, setAlbum] = useState<string | null>(null);
 
-  const items = query.data ?? [];
+  const items = query.data ?? EMPTY;
   const coverAssetId = sections.data?.hero.image?.assetId;
   const categories = useMemo(() => {
     const map = new Map<string, number>();
@@ -330,7 +333,7 @@ export function PhotoEditPage() {
   const sections = useSections();
   const queryClient = useQueryClient();
   const { confirm, toast, refreshSite } = useAdmin();
-  const items = query.data ?? [];
+  const items = query.data ?? EMPTY;
   const index = items.findIndex((g) => g.id === id);
   const photo = items[index];
   const server = useMemo<PhotoForm | undefined>(

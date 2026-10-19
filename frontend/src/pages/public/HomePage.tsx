@@ -29,7 +29,11 @@ export function HomePage() {
   const auth = useAuth();
   const wantsPreview = params.get('preview') === '1';
   const preview = wantsPreview && auth.status === 'signedIn';
-  const waitingAuth = wantsPreview && auth.status === 'loading';
+  const waitingAuth = wantsPreview && (auth.status === 'loading' || auth.status === 'idle');
+  const { activate } = auth;
+  useEffect(() => {
+    if (wantsPreview) activate();
+  }, [wantsPreview, activate]);
   const query = useSite(preview);
   const queryClient = useQueryClient();
 

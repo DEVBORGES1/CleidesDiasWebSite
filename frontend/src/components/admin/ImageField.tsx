@@ -1,4 +1,5 @@
-import { IMAGE_RATIOS, IMAGE_UPLOAD_RULES, imageAspect, type ImageRatio, type ImageValue, type UploadPurpose } from '@cleides/shared';
+import { IMAGE_RATIOS, IMAGE_UPLOAD_RULES, imageAspect } from '@cleides/shared/utils';
+import type { ImageRatio, ImageValue, UploadPurpose } from '@cleides/shared';
 import { useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
 import { useMediaStatus } from '../../hooks/useAdminData';
 import { cdnUrl } from '../../lib/cdn';

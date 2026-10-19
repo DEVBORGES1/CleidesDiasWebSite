@@ -1,4 +1,4 @@
-import { whatsappLink } from '@cleides/shared';
+import { whatsappLink } from '@cleides/shared/utils';
 import { Icon } from '../../components/Icon';
 import { ImageField } from '../../components/admin/ImageField';
 import { Button, Card, IconButton, TextAreaField, TextField, uiStyles } from '../../components/admin/ui';

@@ -1,18 +1,20 @@
 import type { AdminProfile } from '@cleides/shared';
-import type { Session } from '@supabase/supabase-js';
+import type { GoTrueClient as AuthClient, Session } from '@supabase/auth-js';
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { env } from '../lib/env';
-import { supabase } from '../lib/supabase';
+import { authConfigured, env } from '../lib/env';
+import { loadAuthClient } from '../lib/authClient';
 import { adminApi } from '../services/api';
 import { ApiError, configureAuth } from '../services/http';
 
-type AuthStatus = 'loading' | 'unconfigured' | 'signedOut' | 'signedIn' | 'forbidden';
+type AuthStatus = 'idle' | 'loading' | 'unconfigured' | 'signedOut' | 'signedIn' | 'forbidden';
 
 interface AuthContextValue {
   status: AuthStatus;
   profile: AdminProfile | null;
   /** Indica que a usuária chegou pelo link de redefinição de senha. */
   recovering: boolean;
+  /** Carrega o cliente de autenticação (feito sob demanda no painel e na prévia). */
+  activate(): void;
   signIn(email: string, password: string): Promise<void>;
   signOut(): Promise<void>;
   sendPasswordReset(email: string): Promise<void>;
@@ -31,7 +33,9 @@ const authErrorMessage = (message: string) => {
 };
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [status, setStatus] = useState<AuthStatus>(supabase ? 'loading' : 'unconfigured');
+  const [status, setStatus] = useState<AuthStatus>(authConfigured ? 'idle' : 'unconfigured');
+  const clientRef = useRef<AuthClient | null>(null);
+  const activated = useRef(false);
   const [profile, setProfile] = useState<AdminProfile | null>(null);
   const [recovering, setRecovering] = useState(false);
   const sessionRef = useRef<Session | null>(null);
@@ -52,59 +56,75 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  useEffect(() => {
-    if (!supabase) return;
-    configureAuth(
-      async () => {
-        const { data } = await supabase!.auth.getSession();
-        return data.session?.access_token ?? null;
-      },
-      () => {
-        sessionRef.current = null;
-        setProfile(null);
-        setStatus('signedOut');
-      },
-    );
-    supabase.auth.getSession().then(({ data }) => loadProfile(data.session));
-    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'PASSWORD_RECOVERY') setRecovering(true);
-      if (event === 'SIGNED_OUT') void loadProfile(null);
-      if (event === 'SIGNED_IN' && session?.access_token !== sessionRef.current?.access_token) void loadProfile(session);
-      if (event === 'TOKEN_REFRESHED') sessionRef.current = session;
+  const activate = useCallback(() => {
+    const loading = loadAuthClient();
+    if (!loading || activated.current) return;
+    activated.current = true;
+    setStatus('loading');
+    void loading.then(async (client) => {
+      clientRef.current = client;
+      configureAuth(
+        async () => (await client.getSession()).data.session?.access_token ?? null,
+        () => {
+          sessionRef.current = null;
+          setProfile(null);
+          setStatus('signedOut');
+        },
+      );
+      client.onAuthStateChange((event, session) => {
+        if (event === 'PASSWORD_RECOVERY') setRecovering(true);
+        if (event === 'SIGNED_OUT') void loadProfile(null);
+        if (event === 'SIGNED_IN' && session?.access_token !== sessionRef.current?.access_token) void loadProfile(session);
+        if (event === 'TOKEN_REFRESHED') sessionRef.current = session;
+      });
+      const { data } = await client.getSession();
+      await loadProfile(data.session);
     });
-    return () => sub.subscription.unsubscribe();
   }, [loadProfile]);
+
+  // O painel, a pré-visualização e os links de recuperação de senha precisam do login.
+  useEffect(() => {
+    if (window.location.pathname.startsWith('/admin') || /[?&]preview=1/.test(window.location.search)) activate();
+  }, [activate]);
+
+  const requireClient = useCallback(async (): Promise<AuthClient> => {
+    const loading = loadAuthClient();
+    if (!loading) throw new Error('Login não configurado.');
+    activate();
+    return loading;
+  }, [activate]);
 
   const value = useMemo<AuthContextValue>(
     () => ({
       status,
       profile,
       recovering,
+      activate,
       async signIn(email, password) {
-        if (!supabase) throw new Error('Login não configurado.');
-        const { data, error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+        const client = await requireClient();
+        const { data, error } = await client.signInWithPassword({ email: email.trim(), password });
         if (error) throw new Error(authErrorMessage(error.message));
         await loadProfile(data.session);
       },
       async signOut() {
-        await supabase?.auth.signOut();
+        await clientRef.current?.signOut();
         await loadProfile(null);
       },
       async sendPasswordReset(email) {
-        if (!supabase) throw new Error('Login não configurado.');
-        const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+        const client = await requireClient();
+        const { error } = await client.resetPasswordForEmail(email.trim(), {
           redirectTo: `${env.siteUrl}/admin/redefinir-senha`,
         });
         if (error) throw new Error(authErrorMessage(error.message));
       },
       async updatePassword(password) {
-        if (!supabase) throw new Error('Login não configurado.');
-        const { error } = await supabase.auth.updateUser({ password });
+        const client = await requireClient();
+        const { error } = await client.updateUser({ password });
         if (error) throw new Error(authErrorMessage(error.message));
         setRecovering(false);
       },
     }),
-    [status, profile, recovering, loadProfile],
+    [status, profile, recovering, loadProfile, activate, requireClient],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

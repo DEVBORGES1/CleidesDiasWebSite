@@ -1,14 +1,5 @@
-import {
-  CONTENT_LIMITS,
-  HIGHLIGHT_TYPES,
-  IMAGE_UPLOAD_RULES,
-  formatPrice,
-  type HighlightType,
-  type ImageValue,
-  type Package,
-  type PackageHighlight,
-  type PublicationStatus,
-} from '@cleides/shared';
+import { CONTENT_LIMITS, HIGHLIGHT_TYPES, IMAGE_UPLOAD_RULES, formatPrice } from '@cleides/shared/utils';
+import type { HighlightType, ImageValue, Package, PackageHighlight, PublicationStatus } from '@cleides/shared';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
@@ -44,6 +35,8 @@ import { imageFromAsset, toImageInput, uploadImage } from '../../services/upload
 import { BackLink, PageError, PageHeader, PageLoading } from './common';
 import forms from './forms.module.css';
 import styles from './PackageEditPage.module.css';
+
+const EMPTY: Package[] = [];
 
 interface PackageForm {
   name: string;
@@ -124,7 +117,7 @@ export function PackageEditPage() {
   const media = useMediaStatus();
   const queryClient = useQueryClient();
   const { toast, refreshSite, confirm } = useAdmin();
-  const items = query.data ?? [];
+  const items = query.data ?? EMPTY;
   const index = items.findIndex((p) => p.id === id);
   const pkg = index >= 0 ? items[index] : undefined;
   const server = useMemo(() => (query.data ? toForm(pkg, pkg ? index : items.length) : undefined), [query.data, pkg, index, items.length]);
