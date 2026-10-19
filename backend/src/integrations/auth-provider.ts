@@ -30,3 +30,10 @@ export class SupabaseAuthProvider implements AuthProvider {
     return { id: data.user.id, email: data.user.email ?? '' };
   }
 }
+
+/** Usado quando o Supabase não está configurado (desenvolvimento com DATA_DRIVER=memory). */
+export class DisabledAuthProvider implements AuthProvider {
+  async verifyToken(): Promise<AuthenticatedUser | null> {
+    throw unavailable('O login do painel não está configurado neste ambiente.');
+  }
+}

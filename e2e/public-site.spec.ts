@@ -51,6 +51,12 @@ test.describe('site público', () => {
     await page.goto('/pagina-que-nao-existe');
     await expect(page.getByRole('heading', { name: 'Página não encontrada' })).toBeVisible();
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/);
+    await page.goto('/pacotes/pacote-que-nao-existe');
+    await expect(page.getByRole('heading', { name: 'Página não encontrada' })).toBeVisible();
+    // Ao voltar, os efeitos de rolagem da página inicial precisam ser ativados.
+    await page.getByRole('link', { name: 'Voltar ao início' }).click();
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    await expect(page.locator('[data-reveal]').last()).toHaveCSS('opacity', '0');
   });
 
   test('robots.txt aponta o sitemap gerado pela API', async ({ request }) => {
