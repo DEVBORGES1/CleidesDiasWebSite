@@ -1,0 +1,118 @@
+.previewBox {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: var(--bg);
+  border: 1px solid var(--sand);
+}
+.previewLabel {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.previewTitle {
+  font-family: var(--font-serif);
+  font-size: 24px;
+  line-height: 1.2;
+  color: var(--ink);
+}
+.previewTitle em {
+  font-style: italic;
+  color: var(--price);
+}
+.previewText {
+  font-size: 13.5px;
+  color: var(--ink);
+}
+.radioGroup {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+  gap: 10px;
+}
+.radio {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid var(--sand-strong);
+  background: var(--surface);
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+.radio[aria-checked='true'] {
+  border-color: var(--primary);
+  background: #fbf6ee;
+  box-shadow: 0 0 0 1px var(--primary);
+  color: var(--primary);
+}
+.radioText {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.radioLabel {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.radioDesc {
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+.subhead {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding-top: 6px;
+}
+.subheadTitle {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.subheadText {
+  font-size: 12px;
+  color: var(--muted);
+}
+.inlineLink {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.chatRow {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto auto;
+  align-items: center;
+  gap: 6px;
+}
+.whoToggle {
+  height: 34px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid var(--sand-strong);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.whoToggle[data-me='true'] {
+  background: #f1e2c6;
+  border-color: #e3cba0;
+}

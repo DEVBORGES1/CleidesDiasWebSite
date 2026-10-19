@@ -1,0 +1,129 @@
+.pane {
+  flex: none;
+  width: clamp(380px, 32vw, 460px);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: #f1e9dd;
+  border-left: 1px solid var(--sand-strong);
+}
+.bar {
+  flex: none;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0 10px 0 16px;
+  border-bottom: 1px solid var(--sand-strong);
+}
+.title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #5e7f55;
+}
+.tools {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.segment {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--sand);
+}
+.segment button {
+  width: 30px;
+  height: 28px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+.segment button[aria-pressed='true'] {
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: 0 1px 3px rgba(63, 49, 40, 0.15);
+}
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid var(--gold-pale);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.toggle[aria-pressed='true'] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--surface);
+}
+.stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 16px;
+}
+.device {
+  flex: none;
+  transform-origin: top center;
+  background: var(--bg);
+  overflow: hidden;
+  box-shadow: 0 30px 60px -30px rgba(63, 49, 40, 0.45);
+}
+.device[data-mode='mobile'] {
+  border-radius: 40px;
+  border: 1px solid var(--gold-pale);
+}
+.device[data-mode='desktop'] {
+  border-radius: 12px;
+  border: 1px solid var(--gold-pale);
+}
+.frame {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+.pickHint {
+  position: absolute;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--surface);
+  font-size: 12px;
+  white-space: nowrap;
+  pointer-events: none;
+}

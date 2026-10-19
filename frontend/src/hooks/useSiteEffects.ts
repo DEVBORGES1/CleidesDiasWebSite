@@ -116,7 +116,7 @@ export function useScrollState(root: RefObject<HTMLElement | null>, ready: boole
 }
 
 /** Rolagem suave até a seção, descontando a altura do cabeçalho fixo. */
-export function scrollToSection(id: SectionId, smooth = true): void {
+export function scrollToSection(id: SectionId | string, smooth = true): void {
   const behavior: ScrollBehavior = smooth && !window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'smooth' : 'auto';
   if (id === 'inicio') {
     window.scrollTo({ top: 0, behavior });
@@ -127,4 +127,45 @@ export function scrollToSection(id: SectionId, smooth = true): void {
   const header = document.querySelector<HTMLElement>('[data-header]');
   const off = (header?.offsetHeight ?? 0) + (id === 'contato' ? 20 : -1);
   window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - off, behavior });
+}
+
+/**
+ * Integração com a prévia do painel (o site roda dentro de um iframe):
+ * rola até a seção que está sendo editada e, no modo "Selecionar", informa
+ * ao painel qual parte do site foi clicada.
+ */
+export function usePreviewBridge(enabled: boolean): void {
+  useEffect(() => {
+    if (!enabled || window.parent === window) return;
+    let style: HTMLStyleElement | null = null;
+    const onPick = (e: MouseEvent) => {
+      const target = (e.target as Element).closest('[data-pick],[data-sec]');
+      if (!target) return;
+      e.preventDefault();
+      e.stopPropagation();
+      const sec = target.getAttribute('data-pick') ?? target.getAttribute('data-sec');
+      window.parent.postMessage({ type: 'cleides:picked', sec }, window.location.origin);
+    };
+    const setPick = (on: boolean) => {
+      document.removeEventListener('click', onPick, true);
+      style?.remove();
+      style = null;
+      if (!on) return;
+      document.addEventListener('click', onPick, true);
+      style = document.createElement('style');
+      style.textContent =
+        '[data-pick]:hover,[data-sec]:hover{outline:2px dashed #8F6B3E;outline-offset:-2px;cursor:pointer}[data-pick] [data-sec]:hover,[data-sec] [data-pick]:hover{outline:none}';
+      document.head.appendChild(style);
+    };
+    const onMessage = (e: MessageEvent) => {
+      if (e.origin !== window.location.origin) return;
+      if (e.data?.type === 'cleides:goto') scrollToSection(String(e.data.sec), true);
+      if (e.data?.type === 'cleides:pick-mode') setPick(Boolean(e.data.on));
+    };
+    window.addEventListener('message', onMessage);
+    return () => {
+      window.removeEventListener('message', onMessage);
+      setPick(false);
+    };
+  }, [enabled]);
 }

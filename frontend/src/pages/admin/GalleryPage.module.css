@@ -1,0 +1,276 @@
+.drop {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 20px 22px;
+  border: 1.5px dashed var(--gold-pale);
+  border-radius: 16px;
+  background: var(--surface);
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+.drop[data-over] {
+  background: #f3e9d8;
+  border-color: var(--primary);
+}
+.dropIcon {
+  flex: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: #f3e9d8;
+  color: var(--primary);
+}
+.dropText {
+  flex: 1 1 240px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.dropTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.dropHint {
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+.dropBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1px solid var(--gold-pale);
+  background: var(--surface);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.uploads {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.upload {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--sand);
+}
+.upload[data-state='error'] {
+  background: #fbf0eb;
+  border-color: #ecd0c4;
+}
+.uploadIcon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 24px;
+}
+.uploadText {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.uploadName {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.uploadMsg {
+  font-size: 12px;
+  color: var(--muted);
+}
+.bar {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--sand);
+  overflow: hidden;
+}
+.bar span {
+  display: block;
+  height: 100%;
+  background: var(--primary);
+  transition: width 0.2s;
+}
+.draftBanner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: #fbf6ee;
+  border: 1px dashed var(--gold-pale);
+  font-size: 13px;
+  color: #7a5a30;
+}
+.draftBanner span {
+  flex: 1 1 200px;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid var(--sand-strong);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.chip span {
+  font-size: 11.5px;
+  color: var(--muted);
+}
+.chip[aria-pressed='true'] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--surface);
+}
+.chip[aria-pressed='true'] span {
+  color: #d9cfc2;
+}
+.hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+}
+.tile {
+  border-radius: 14px;
+  transition: box-shadow 0.15s, opacity 0.15s;
+}
+.tile[data-dragging] {
+  opacity: 0.4;
+}
+.tile[data-over] {
+  box-shadow: 0 0 0 2px var(--primary);
+}
+.tileBtn {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  border: 1px solid var(--sand);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--surface);
+  text-align: left;
+  cursor: pointer;
+}
+.tileBtn:hover {
+  border-color: var(--gold-pale);
+}
+.tileMedia {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: repeating-linear-gradient(135deg, #efe5d6 0 10px, #f4ece0 10px 20px);
+}
+.tileMedia img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.noPhoto {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.tileBadges {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.coverBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 24px;
+  padding: 0 9px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #f1ddb0;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.tileText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px 12px;
+}
+.tileTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tileAlbum {
+  font-size: 12px;
+  color: var(--muted);
+}
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: var(--surface);
+  border: 1px solid var(--sand);
+  position: sticky;
+  bottom: 12px;
+  box-shadow: 0 16px 30px -24px rgba(63, 49, 40, 0.45);
+}
+.footerButtons {
+  display: flex;
+  gap: 8px;
+}

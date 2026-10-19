@@ -32,7 +32,7 @@ export function SiteFooter({ model, compact, onNav }: Props) {
     );
 
   return (
-    <footer data-fab-hide="" className={styles.footer}>
+    <footer data-fab-hide="" data-pick="rodape" className={styles.footer}>
       <div className={styles.container}>
         <div className={styles.top}>
           <div className={styles.brand} data-compact={compact || undefined}>

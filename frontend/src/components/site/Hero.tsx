@@ -92,7 +92,7 @@ export function Hero({ model, compact, onNav }: Props) {
       )}
 
       {hero.benefits.length > 0 && (
-        <section className={styles.benefits} aria-label="Diferenciais">
+        <section className={styles.benefits} aria-label="Diferenciais" data-pick="beneficios">
           <ul className={styles.benefitsGrid} data-compact={compact || undefined}>
             {hero.benefits.map((b, i) => (
               <li key={i} className={styles.benefit}>

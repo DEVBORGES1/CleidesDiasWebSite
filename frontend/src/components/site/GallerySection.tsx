@@ -98,7 +98,7 @@ export function Marquee({ words }: { words: string[] }) {
     </div>
   );
   return (
-    <div aria-hidden="true" className={styles.marquee}>
+    <div aria-hidden="true" className={styles.marquee} data-pick="faixa">
       <div className={styles.marqueeTrack}>
         {group}
         {group}

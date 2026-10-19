@@ -2,6 +2,7 @@ import { formatPrice, ROMAN, type Package } from '@cleides/shared';
 import { useState } from 'react';
 import type { SectionId } from '../../hooks/useSiteEffects';
 import type { SiteModel } from '../../pages/public/siteModel';
+import { cdnUrl } from '../../lib/cdn';
 import { Icon } from '../Icon';
 import styles from './SiteHeader.module.css';
 
@@ -37,7 +38,7 @@ export function SiteHeader({ model, compact, scrolled, active, onNav, onOpenPack
   );
 
   return (
-    <header data-header="" className={styles.header} data-pill={pill || undefined}>
+    <header data-header="" data-pick="cabecalho" className={styles.header} data-pill={pill || undefined}>
       <div className={styles.inner}>
         <a
           href="#inicio"
@@ -48,7 +49,11 @@ export function SiteHeader({ model, compact, scrolled, active, onNav, onOpenPack
             onNav('inicio');
           }}
         >
-          <Icon name="photo_camera" size={20} color="var(--gold)" />
+          {settings.logo?.url ? (
+            <img src={cdnUrl(settings.logo.url, 160)} alt="" className={styles.logoImg} />
+          ) : (
+            <Icon name="photo_camera" size={20} color="var(--gold)" />
+          )}
           <span className={styles.logoText}>
             <span className={styles.brand}>{settings.brandName}</span>
             {settings.brandSubtitle && <span className={styles.brandSub}>{settings.brandSubtitle}</span>}

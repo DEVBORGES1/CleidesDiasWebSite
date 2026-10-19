@@ -226,3 +226,10 @@
   cursor: pointer;
   color: var(--ink);
 }
+
+.logoImg {
+  height: 28px;
+  width: auto;
+  max-width: 80px;
+  object-fit: contain;
+}

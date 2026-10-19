@@ -18,7 +18,7 @@ import { SiteFooter } from '../../components/site/SiteFooter';
 import { SiteHeader } from '../../components/site/SiteHeader';
 import { useAuth } from '../../contexts/AuthContext';
 import { useCompact, useReducedMotion } from '../../hooks/useMediaQuery';
-import { scrollToSection, useParallax, useReveal, useScrollState, type SectionId } from '../../hooks/useSiteEffects';
+import { scrollToSection, useParallax, usePreviewBridge, useReveal, useScrollState, type SectionId } from '../../hooks/useSiteEffects';
 import { siteQueryKey, useSite } from '../../hooks/useSite';
 import { buildSiteModel } from './siteModel';
 import { SiteError, SiteLoading } from './SiteStates';
@@ -64,6 +64,7 @@ function Home({ data, previewRequestedWithoutLogin }: { data: Parameters<typeof 
   useReveal(rootRef, true, reduce || model.preview);
   useParallax(rootRef, true, reduce);
   const { active, scrolled, nearContact } = useScrollState(rootRef, true);
+  usePreviewBridge(true);
 
   const detail = slug ? model.packages.find((p) => p.slug === slug) : undefined;
   const search = location.search;
