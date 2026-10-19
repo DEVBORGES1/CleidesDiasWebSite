@@ -13,7 +13,7 @@
     "test": "vitest run",
     "seed": "tsx --conditions=development scripts/seed.ts",
     "create-admin": "tsx --conditions=development scripts/create-admin.ts",
-    "media:cleanup": "tsx --conditions=development scripts/media-cleanup.ts"
+    "media:cleanup": "tsx --conditions=development src/jobs/media-cleanup.ts"
   },
   "dependencies": {
     "@cleides/shared": "1.0.0",

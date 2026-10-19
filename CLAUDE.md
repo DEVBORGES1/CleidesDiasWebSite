@@ -24,7 +24,8 @@ Monorepo com workspaces npm:
 - `shared/` — contratos (schemas Zod e tipos TypeScript) usados pelo backend e pelo frontend.
 - `backend/` — API REST (Node.js + Express + TypeScript), Supabase (PostgreSQL/Auth) e Cloudinary.
 - `frontend/` — site público e painel administrativo (React + Vite + TypeScript + React Router).
-- `backend/migrations/` — migrations SQL versionadas do Supabase.
+- `backend/supabase/migrations/` — migrations SQL versionadas do Supabase.
+- `e2e/` — testes ponta a ponta e serviços simulados (Supabase Auth e Cloudinary).
 - `docs/` — arquitetura, banco de dados, API e implantação.
 
 ## Comandos
@@ -32,7 +33,9 @@ Monorepo com workspaces npm:
 ```bash
 npm install            # instala tudo e ativa os hooks de git
 npm run dev            # backend (porta 4000) + frontend (porta 5173)
+npm run e2e:stack      # demonstração local sem contas externas (dados em memória)
 npm test               # testes de todos os workspaces
+npm run test:e2e       # testes ponta a ponta (Playwright)
 npm run typecheck      # checagem de tipos
 npm run lint           # ESLint
 npm run build          # build de produção
@@ -45,3 +48,6 @@ npm run build          # build de produção
   O cliente Supabase do frontend serve apenas para autenticação.
 - Segredos (`SUPABASE_SERVICE_ROLE_KEY`, `CLOUDINARY_API_SECRET`) só existem no backend.
 - Textos da interface em português do Brasil.
+- Runtime do site público importa utilitários de `@cleides/shared/utils` (sem Zod) para manter o bundle leve;
+  tipos podem vir de `@cleides/shared` com `import type`.
+- Ao usar um ícone novo do Material Symbols, inclua o nome na lista `icon_names` em `frontend/index.html`.

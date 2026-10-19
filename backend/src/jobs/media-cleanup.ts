@@ -1,11 +1,11 @@
 /**
  * Remove do Cloudinary uploads abandonados e fotos sem uso há mais de 24h.
- * Pode ser agendado (ex.: Render Cron Job diário): npm run media:cleanup
+ * Agendado no Render (cron diário): node backend/dist/jobs/media-cleanup.js
  */
 import 'dotenv/config';
-import { loadEnv } from '../src/config/env.js';
-import { createLogger } from '../src/config/logger.js';
-import { createContainer } from '../src/container.js';
+import { loadEnv } from '../config/env.js';
+import { createLogger } from '../config/logger.js';
+import { createContainer } from '../container.js';
 
 const env = loadEnv();
 const logger = createLogger(env);
