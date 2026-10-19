@@ -20,6 +20,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useCompact, useReducedMotion } from '../../hooks/useMediaQuery';
 import { scrollToSection, useParallax, usePreviewBridge, useReveal, useScrollState, type SectionId } from '../../hooks/useSiteEffects';
 import { siteQueryKey, useSite } from '../../hooks/useSite';
+import { NotFoundPage } from './NotFoundPage';
 import { buildSiteModel } from './siteModel';
 import { SiteError, SiteLoading } from './SiteStates';
 import styles from './HomePage.module.css';
@@ -95,6 +96,8 @@ function Home({ data, previewRequestedWithoutLogin }: { data: Parameters<typeof 
   }, [location.hash]);
 
   const overlay = menu || !!lightbox || !!detail;
+  // Pacote inexistente, excluído ou despublicado: link quebrado vira 404.
+  if (slug && !detail) return <NotFoundPage />;
   // Dentro da prévia do painel a faixa de aviso é desnecessária.
   const inFrame = typeof window !== 'undefined' && window.parent !== window;
   const seo = model.settings.seo;

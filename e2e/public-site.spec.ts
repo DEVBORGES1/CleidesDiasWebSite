@@ -51,6 +51,8 @@ test.describe('site público', () => {
     await page.goto('/pagina-que-nao-existe');
     await expect(page.getByRole('heading', { name: 'Página não encontrada' })).toBeVisible();
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/);
+    await page.goto('/pacotes/pacote-que-nao-existe');
+    await expect(page.getByRole('heading', { name: 'Página não encontrada' })).toBeVisible();
   });
 
   test('robots.txt aponta o sitemap gerado pela API', async ({ request }) => {
