@@ -19,7 +19,6 @@ const envSchema = z
     /** `supabase` em produção; `memory` apenas para desenvolvimento local e testes. */
     DATA_DRIVER: z.enum(['supabase', 'memory']).default('supabase'),
     SUPABASE_URL: z.url().optional(),
-    SUPABASE_ANON_KEY: z.string().min(20).optional(),
     SUPABASE_SERVICE_ROLE_KEY: z.string().min(20).optional(),
     CLOUDINARY_CLOUD_NAME: z.string().min(1).optional(),
     CLOUDINARY_API_KEY: z.string().min(1).optional(),
