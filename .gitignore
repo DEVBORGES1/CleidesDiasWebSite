@@ -1,0 +1,31 @@
+# Dependências
+node_modules/
+
+# Builds
+dist/
+build/
+coverage/
+*.tsbuildinfo
+
+# Variáveis de ambiente (nunca versionar segredos)
+.env
+.env.*
+!.env.example
+
+# Logs e sistema
+npm-debug.log*
+*.log
+.DS_Store
+Thumbs.db
+
+# Editores
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# Testes E2E
+test-results/
+playwright-report/
+
+# Configurações locais do Claude Code
+.claude/settings.local.json

@@ -1,0 +1,9 @@
+#!/bin/sh
+# Remove linhas de coautoria/atribuição automáticas: os commits deste
+# repositório são feitos somente em nome do autor configurado no git.
+msg_file="$1"
+tmp="$(mktemp)"
+grep -viE '^(Co-Authored-By:.*(Claude|anthropic)|Claude-Session:)' "$msg_file" > "$tmp" || true
+# Remove linhas em branco sobrando no final da mensagem.
+awk 'NF { for (i = 0; i < blank; i++) print ""; blank = 0; print; next } { blank++ }' "$tmp" > "$msg_file"
+rm -f "$tmp"
