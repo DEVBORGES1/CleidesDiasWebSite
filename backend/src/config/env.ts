@@ -27,6 +27,9 @@ const envSchema = z
     CLOUDINARY_UPLOAD_PREFIX: z.url().optional(),
     /** Semeia dados de demonstração ao iniciar com DATA_DRIVER=memory. */
     MEMORY_SEED: bool,
+    /** Somente com DATA_DRIVER=memory: cria o perfil de administradora para este usuário do Auth. */
+    MEMORY_ADMIN_USER_ID: z.uuid().optional(),
+    MEMORY_ADMIN_EMAIL: z.email().optional(),
   })
   .superRefine((env, ctx) => {
     if (env.DATA_DRIVER === 'memory' && env.NODE_ENV === 'production') {

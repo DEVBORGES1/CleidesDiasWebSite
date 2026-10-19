@@ -91,6 +91,8 @@ function Home({ data, previewRequestedWithoutLogin }: { data: Parameters<typeof 
   }, [location.hash]);
 
   const overlay = menu || !!lightbox || !!detail;
+  // Dentro da prévia do painel a faixa de aviso é desnecessária.
+  const inFrame = typeof window !== 'undefined' && window.parent !== window;
   const seo = model.settings.seo;
   const title = detail ? `${detail.name} · ${model.settings.brandName}` : seo.title || model.settings.brandName;
   const description = detail ? detail.description || detail.subtitle : seo.description;
@@ -107,7 +109,7 @@ function Home({ data, previewRequestedWithoutLogin }: { data: Parameters<typeof 
       <a href="#conteudo" className="skip-link">
         Pular para o conteúdo
       </a>
-      {(model.preview || previewRequestedWithoutLogin) && (
+      {(model.preview || previewRequestedWithoutLogin) && !inFrame && (
         <div className={styles.previewBar} role="status">
           <Icon name={model.preview ? 'visibility' : 'lock'} size={18} />
           {model.preview

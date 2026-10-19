@@ -229,6 +229,8 @@
 
 .pill {
   flex: none;
+  font-family: var(--font-sans);
+  letter-spacing: 0;
   display: inline-flex;
   align-items: center;
   gap: 6px;

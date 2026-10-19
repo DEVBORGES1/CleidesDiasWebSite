@@ -289,3 +289,8 @@
   border-color: var(--ink);
   color: var(--surface);
 }
+@media (max-width: 480px) {
+  .brandText {
+    display: none;
+  }
+}
