@@ -27,6 +27,7 @@ import styles from './HomePage.module.css';
 
 export function HomePage() {
   const [params] = useSearchParams();
+  const { slug } = useParams();
   const auth = useAuth();
   const wantsPreview = params.get('preview') === '1';
   const preview = wantsPreview && auth.status === 'signedIn';
@@ -52,6 +53,9 @@ export function HomePage() {
 
   if (waitingAuth || query.isPending) return <SiteLoading />;
   if (query.isError || !query.data) return <SiteError onRetry={() => query.refetch()} />;
+  // Pacote inexistente, excluído ou despublicado: link quebrado vira 404. Fica fora de `Home`
+  // para que, ao voltar ao início, os efeitos de rolagem sejam montados no novo elemento raiz.
+  if (slug && !query.data.packages.some((p) => p.slug === slug)) return <NotFoundPage />;
   return <Home data={query.data} previewRequestedWithoutLogin={wantsPreview && !preview} />;
 }
 
@@ -96,8 +100,6 @@ function Home({ data, previewRequestedWithoutLogin }: { data: Parameters<typeof 
   }, [location.hash]);
 
   const overlay = menu || !!lightbox || !!detail;
-  // Pacote inexistente, excluído ou despublicado: link quebrado vira 404.
-  if (slug && !detail) return <NotFoundPage />;
   // Dentro da prévia do painel a faixa de aviso é desnecessária.
   const inFrame = typeof window !== 'undefined' && window.parent !== window;
   const seo = model.settings.seo;
