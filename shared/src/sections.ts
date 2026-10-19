@@ -21,7 +21,7 @@ function buildSectionSchemas<I extends ImgSchema>(img: I) {
       primaryButton: text(40).default(''),
       secondaryButton: text(40).default(''),
       benefits: list(4, 80),
-      image: img.nullable().default(null),
+      image: z.nullable(img).default(null),
     }),
     about: z.object({
       eyebrow: text(80).default(''),
@@ -33,7 +33,7 @@ function buildSectionSchemas<I extends ImgSchema>(img: I) {
       cardRole: text(80).default(''),
       ctaLabel: text(40).default(''),
       ctaTarget: z.enum(['whatsapp', 'instagram', 'contato']).default('whatsapp'),
-      image: img.nullable().default(null),
+      image: z.nullable(img).default(null),
     }),
     packages: z.object({
       title: text(80).default(''),
@@ -73,7 +73,7 @@ function buildSectionSchemas<I extends ImgSchema>(img: I) {
       text: text(500).default(''),
       buttonLabel: text(50).default(''),
       note: text(160).default(''),
-      image: img.nullable().default(null),
+      image: z.nullable(img).default(null),
     }),
     legal: z.object({
       privacyText: text(20000).default(''),

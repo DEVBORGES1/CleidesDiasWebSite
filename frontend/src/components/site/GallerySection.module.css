@@ -1,0 +1,224 @@
+.section {
+  padding: clamp(24px, 3cqi, 40px) clamp(20px, 4cqi, 56px) clamp(56px, 8cqi, 112px);
+}
+.container {
+  max-width: 1240px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(32px, 3.6cqi, 48px);
+}
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: -12px;
+}
+.chip {
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid var(--gold-pale);
+  background: transparent;
+  color: var(--ink);
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.chip:hover {
+  background: var(--surface);
+}
+.chip[aria-pressed='true'] {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--surface);
+}
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(8px, 1cqi, 14px);
+}
+.figure {
+  min-width: 0;
+  margin: 0;
+  position: relative;
+  overflow: hidden;
+  background: var(--placeholder);
+}
+.open {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+  display: block;
+  width: 100%;
+}
+.zoomLayer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  transition: transform 1.2s var(--ease-out);
+}
+.shade {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(0deg, rgba(47, 36, 29, 0.62) 0%, rgba(47, 36, 29, 0.12) 55%, rgba(47, 36, 29, 0) 100%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.caption {
+  position: absolute;
+  left: 18px;
+  right: 56px;
+  bottom: 16px;
+  z-index: 2;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--surface);
+  text-align: left;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.5s ease, transform 0.6s var(--ease-out);
+}
+.album {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #f1ddb0;
+}
+.title {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 18px;
+  line-height: 1.25;
+}
+.see {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.seeLine {
+  height: 1px;
+  width: 0;
+  background: #f1ddb0;
+  transition: width 0.6s var(--ease-out) 0.1s;
+}
+@media (hover: hover) {
+  .open:hover .zoomLayer,
+  .open:focus-visible .zoomLayer {
+    transform: scale(1.06);
+  }
+  .open:hover .shade,
+  .open:hover .caption,
+  .open:focus-visible .shade,
+  .open:focus-visible .caption {
+    opacity: 1;
+  }
+  .open:hover .caption,
+  .open:focus-visible .caption {
+    transform: translateY(0);
+  }
+  .open:hover .seeLine,
+  .open:focus-visible .seeLine {
+    width: 28px;
+  }
+}
+.open:focus-visible {
+  outline-offset: -3px;
+}
+.zoomBtn {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  z-index: 3;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 253, 249, 0.92);
+  color: var(--ink);
+  display: grid;
+  place-items: center;
+}
+.draft {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 3;
+}
+.filler {
+  flex: 100 1 0px;
+  height: 0;
+}
+.more {
+  display: flex;
+  justify-content: center;
+}
+.moreBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 28px;
+  border-radius: 999px;
+  border: 1px solid var(--gold-soft);
+  background: transparent;
+  color: var(--ink);
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.25s, gap 0.25s;
+}
+.moreBtn:hover {
+  background: var(--surface);
+  gap: 14px;
+}
+
+.marquee {
+  overflow: hidden;
+  background: var(--sand);
+  border-top: 1px solid var(--sand-strong);
+  border-bottom: 1px solid var(--sand-strong);
+  padding: 18px 0;
+}
+.marqueeTrack {
+  display: flex;
+  width: max-content;
+  animation: v2Marquee 48s linear infinite;
+}
+.marqueeGroup {
+  display: flex;
+  align-items: center;
+  gap: 34px;
+  padding-right: 34px;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(22px, 2.2cqi, 30px);
+  line-height: 1.2;
+  color: var(--primary);
+  white-space: nowrap;
+}
+.marqueeItem {
+  display: flex;
+  align-items: center;
+  gap: 34px;
+}
+.diamond {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  background: var(--gold-line);
+  transform: rotate(45deg);
+}

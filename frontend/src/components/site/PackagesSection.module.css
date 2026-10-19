@@ -1,0 +1,301 @@
+.section {
+  padding: clamp(56px, 8cqi, 112px) clamp(20px, 4cqi, 56px);
+}
+.container {
+  max-width: 1180px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(40px, 4.4cqi, 56px);
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr));
+  gap: clamp(20px, 2cqi, 28px);
+  align-items: stretch;
+  padding-top: 12px;
+}
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 40px clamp(24px, 2.6cqi, 36px) 32px;
+  background: var(--surface);
+  border: 1px solid var(--sand-strong);
+  transition: transform 0.45s var(--ease-out), box-shadow 0.45s;
+}
+.card[data-img] {
+  padding-top: 0;
+}
+.card[data-featured] {
+  border-color: var(--gold-line);
+  box-shadow: 0 24px 48px -34px rgba(143, 107, 62, 0.5);
+}
+.card[data-draft] {
+  border-color: var(--gold-line);
+  border-style: dashed;
+}
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 28px 50px -30px rgba(63, 49, 40, 0.35);
+}
+.badge {
+  position: absolute;
+  top: -13px;
+  right: 22px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 12px;
+  height: 26px;
+  border-radius: 999px;
+  background: var(--primary);
+  color: var(--surface);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.draftDesktop {
+  position: absolute;
+  top: -12px;
+  left: 22px;
+  z-index: 2;
+}
+.cardMedia {
+  align-self: stretch;
+  margin: 0 calc(-1 * clamp(24px, 2.6cqi, 36px)) 28px;
+  position: relative;
+  overflow: hidden;
+  background: var(--placeholder);
+}
+.cardName {
+  margin: 14px 0 0;
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: 30px;
+  line-height: 1.1;
+  color: var(--ink);
+}
+.cardSubtitle {
+  margin: 10px 0 0;
+  max-width: 26ch;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--text);
+}
+.priceBlock {
+  margin: 22px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.oldPrice {
+  font-size: 13px;
+  color: var(--muted);
+  text-decoration: line-through;
+}
+.price {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-family: var(--font-serif);
+  color: var(--price);
+}
+.currency {
+  font-size: 24px;
+}
+.amount {
+  font-size: 48px;
+  line-height: 1;
+}
+.divider {
+  align-self: stretch;
+  height: 1px;
+  background: var(--sand);
+}
+.items {
+  align-self: stretch;
+  list-style: none;
+  margin: 22px 0 28px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: left;
+}
+.items li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--ink);
+}
+.detailsBtn {
+  margin-top: auto;
+  min-height: 46px;
+  padding: 0 40px;
+  border-radius: 999px;
+  border: 1px solid var(--gold-soft);
+  background: transparent;
+  color: var(--ink);
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.25s, color 0.25s;
+}
+.detailsBtn[data-featured] {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: var(--surface);
+}
+.detailsBtn:hover {
+  background: var(--primary-hover);
+  color: var(--surface);
+  border-color: var(--primary-hover);
+}
+
+.mobileList {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-top: 4px;
+}
+.mobileCard {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 22px 18px 22px 22px;
+  background: var(--surface);
+  border: 1px solid var(--sand-strong);
+  text-align: left;
+  cursor: pointer;
+}
+.mobileCard[data-img] {
+  padding: 14px 18px 14px 14px;
+}
+.mobileCard[data-featured] {
+  border-color: var(--gold-line);
+  box-shadow: 0 20px 40px -30px rgba(143, 107, 62, 0.5);
+}
+.mobileCard[data-draft] {
+  border-color: var(--gold-line);
+  border-style: dashed;
+}
+.mobileCard:active {
+  transform: scale(0.99);
+}
+.badgeMobile {
+  top: -11px;
+  right: 16px;
+  height: 22px;
+  padding: 0 10px;
+  font-size: 9.5px;
+}
+.draftMobile {
+  position: absolute;
+  top: -11px;
+  left: 16px;
+  z-index: 2;
+}
+.mobileThumb {
+  flex: none;
+  width: 76px;
+  height: 96px;
+  position: relative;
+  overflow: hidden;
+  background: var(--placeholder);
+}
+.mobileText {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.mobileName {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  line-height: 1.15;
+  color: var(--ink);
+}
+.mobileSummary {
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--muted);
+}
+.mobilePrices {
+  margin-top: 4px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+}
+.mobilePrice {
+  font-family: var(--font-serif);
+  font-size: 28px;
+  line-height: 1;
+  color: var(--price);
+}
+.arrow {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--gold-pale);
+  background: transparent;
+  color: var(--primary);
+  display: grid;
+  place-items: center;
+}
+.arrow[data-featured] {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: var(--surface);
+}
+.hint {
+  text-align: center;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+.lead {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text);
+  padding-top: 6px;
+}
+.waBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 52px;
+  max-width: 100%;
+  padding: 0 28px;
+  border-radius: 999px;
+  background: var(--primary);
+  color: var(--surface);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.25s, gap 0.25s;
+}
+.waBtn:hover {
+  background: var(--primary-hover);
+  color: var(--surface);
+  gap: 14px;
+}
