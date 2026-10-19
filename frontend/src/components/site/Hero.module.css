@@ -1,0 +1,210 @@
+.desktop {
+  position: relative;
+  overflow: hidden;
+  background: var(--bg);
+}
+.media {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 64%;
+  overflow: hidden;
+  background: var(--placeholder);
+}
+.parallax {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -7%;
+  bottom: -7%;
+  will-change: transform;
+}
+.mediaFade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #faf6ef 0%, rgba(250, 246, 239, 0.78) 14%, rgba(250, 246, 239, 0) 40%);
+  pointer-events: none;
+}
+.content {
+  position: relative;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: clamp(72px, 8cqi, 120px) clamp(20px, 4cqi, 56px);
+  min-height: clamp(540px, 44cqi, 660px);
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+}
+.copy {
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  pointer-events: auto;
+}
+.eyebrow {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.title {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: clamp(46px, 4.6cqi, 66px);
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.text {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--text);
+}
+.textNarrow {
+  line-height: 1.8;
+  max-width: 34ch;
+}
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding-top: 6px;
+}
+.btnPrimary,
+.btnOutline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 0 28px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.25s, gap 0.25s;
+}
+.btnPrimary {
+  background: var(--primary);
+  color: var(--surface);
+}
+.btnPrimary:hover {
+  background: var(--primary-hover);
+  color: var(--surface);
+}
+.btnGrow:hover {
+  gap: 14px;
+}
+.btnOutline {
+  border: 1px solid var(--gold-soft);
+  color: var(--ink);
+}
+.btnGlass {
+  background: rgba(255, 253, 249, 0.6);
+}
+.btnOutline:hover {
+  background: var(--surface);
+  color: var(--ink);
+}
+.btnBlock {
+  display: flex;
+  min-height: 54px;
+  font-size: 15px;
+}
+
+.mobile {
+  background: var(--bg);
+}
+.mobileMedia {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: var(--placeholder);
+}
+.mobileFade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 22%;
+  background: linear-gradient(0deg, #faf6ef 0%, rgba(250, 246, 239, 0) 100%);
+  pointer-events: none;
+}
+.mobileBody {
+  padding: 8px 20px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.mobileEyebrow {
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+.mobileTitle {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: 40px;
+  line-height: 1.1;
+  color: var(--ink);
+}
+.mobileButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+.benefits {
+  background: var(--surface);
+  border-top: 1px solid var(--sand);
+  border-bottom: 1px solid var(--sand);
+  padding: 0 clamp(0px, 4cqi, 56px);
+}
+.benefitsGrid {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+  max-width: 1280px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr));
+  gap: 1px;
+  background: var(--sand);
+}
+.benefit {
+  display: flex;
+  flex-direction: row;
+  text-align: left;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: clamp(20px, 2.4cqi, 30px) 18px;
+  background: var(--surface);
+}
+.benefitsGrid[data-compact] {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.benefitsGrid[data-compact] .benefit {
+  flex-direction: column;
+  text-align: center;
+  gap: 10px;
+  padding: 24px 14px;
+}
+.benefitText {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--ink);
+}

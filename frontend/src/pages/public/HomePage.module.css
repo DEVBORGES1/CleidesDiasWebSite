@@ -1,0 +1,31 @@
+.root {
+  position: relative;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: clip;
+}
+.page {
+  container-type: inline-size;
+}
+.main:focus {
+  outline: none;
+}
+.tabSpacer {
+  height: 68px;
+  background: var(--surface-alt);
+}
+.previewBar {
+  position: relative;
+  z-index: 41;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: var(--ink);
+  color: var(--surface);
+  font-size: 12.5px;
+  line-height: 1.4;
+  text-align: center;
+}

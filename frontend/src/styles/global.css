@@ -1,0 +1,145 @@
+/* Base visual comum ao site e ao painel (paleta e tipografia dos mockups). */
+:root {
+  --bg: #faf6ef;
+  --surface: #fffdf9;
+  --surface-alt: #f3ebdf;
+  --sand: #efe6da;
+  --sand-strong: #e5d6c3;
+  --placeholder: #efe5d6;
+  --ink: #3f3128;
+  --text: #6b5a4c;
+  --muted: #7a6754;
+  --gold: #a47b45;
+  --gold-soft: #b8924f;
+  --gold-line: #c9ae85;
+  --gold-pale: #d9c3a0;
+  --primary: #8f6b3e;
+  --primary-hover: #7a5b33;
+  --price: #9a7340;
+  --danger: #9b2f2f;
+  --success: #3e5235;
+  --font-sans: 'Montserrat', system-ui, sans-serif;
+  --font-serif: 'Playfair Display', Georgia, serif;
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-variant-numeric: lining-nums;
+  font-feature-settings: 'lnum' 1;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+img {
+  max-width: 100%;
+}
+
+a {
+  color: var(--primary);
+  text-underline-offset: 3px;
+}
+a:hover {
+  color: var(--ink);
+}
+
+::selection {
+  background: var(--sand-strong);
+  color: var(--ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+}
+
+/* Ícones Material Symbols (mesma configuração dos mockups). */
+.ms {
+  font-family: 'Material Symbols Outlined';
+  font-weight: 300;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: 0;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+}
+
+.sr-only {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: fixed;
+  left: 12px;
+  top: -60px;
+  z-index: 200;
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: var(--primary);
+  color: var(--surface);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: top 0.2s;
+}
+.skip-link:focus {
+  top: 12px;
+  color: var(--surface);
+}
+
+@keyframes v2Fade { from { opacity: 0 } to { opacity: 1 } }
+@keyframes v2Rise { from { opacity: 0; transform: translateY(12px) } to { opacity: 1; transform: none } }
+@keyframes v2Zoom { from { opacity: 0; transform: scale(.97) } to { opacity: 1; transform: none } }
+@keyframes v2Fall { from { transform: translateY(-6%) } to { transform: translateY(106%) } }
+@keyframes v2Sway { 0%, 100% { transform: translateX(-9px) } 50% { transform: translateX(9px) } }
+@keyframes v2Twinkle { 0%, 100% { opacity: .2 } 50% { opacity: .85 } }
+@keyframes v2Glow { 0%, 100% { opacity: .18; transform: scale(.9) } 50% { opacity: .7; transform: scale(1.04) } }
+@keyframes v2Sheet { from { transform: translateY(100%) } to { transform: none } }
+@keyframes v2Marquee { from { transform: translateX(0) } to { transform: translateX(-50%) } }
+@keyframes v2Dot { 0%, 80%, 100% { opacity: .25 } 40% { opacity: 1 } }
+@keyframes v2Drift { from { transform: translate(-6px, 4px) } to { transform: translate(6px, -6px) } }
+@keyframes cmsSpin { to { transform: rotate(360deg) } }
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

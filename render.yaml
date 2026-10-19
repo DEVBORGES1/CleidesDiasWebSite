@@ -1,0 +1,65 @@
+# Blueprint do Render para a API (https://render.com/docs/blueprint-spec).
+# Variáveis marcadas com `sync: false` são preenchidas no painel do Render (segredos).
+services:
+  - type: web
+    name: cleides-api
+    runtime: node
+    plan: starter
+    region: oregon
+    rootDir: .
+    buildCommand: npm ci --include=dev && npm run build:backend
+    startCommand: npm run start
+    healthCheckPath: /api/v1/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: 22.22.0
+      - key: LOG_LEVEL
+        value: info
+      - key: TRUST_PROXY
+        value: 1
+      - key: DATA_DRIVER
+        value: supabase
+      - key: FRONTEND_URL
+        sync: false
+      - key: SITE_URL
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+
+  # Remove do Cloudinary uploads abandonados e fotos sem uso há mais de 24h.
+  - type: cron
+    name: cleides-media-cleanup
+    runtime: node
+    plan: starter
+    region: oregon
+    schedule: '15 6 * * *'
+    buildCommand: npm ci --include=dev && npm run build:backend
+    startCommand: node backend/dist/jobs/media-cleanup.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: 22.22.0
+      - key: DATA_DRIVER
+        value: supabase
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
