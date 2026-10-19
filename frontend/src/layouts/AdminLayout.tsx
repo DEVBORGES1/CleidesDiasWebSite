@@ -35,7 +35,9 @@ function Shell({ frameRef }: { frameRef: React.RefObject<HTMLIFrameElement | nul
   const saving = !!editor?.saving;
 
   // Avisa antes de sair da página com alterações não salvas.
-  const blocker = useBlocker(({ currentLocation, nextLocation }) => dirty && currentLocation.pathname !== nextLocation.pathname);
+  const blocker = useBlocker(
+    ({ currentLocation, nextLocation }) => !!(editor?.isDirty?.() ?? dirty) && currentLocation.pathname !== nextLocation.pathname,
+  );
   useEffect(() => {
     if (blocker.state !== 'blocked') return;
     void confirm({

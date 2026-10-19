@@ -1,6 +1,7 @@
 import { CONTENT_LIMITS, IMAGE_UPLOAD_RULES, type GalleryImage, type ImageValue, type PublicationStatus } from '@cleides/shared';
 import { useQueryClient } from '@tanstack/react-query';
 import { useMemo, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 import { useNavigate, useParams } from 'react-router';
 import { Icon } from '../../components/Icon';
 import { ImageField } from '../../components/admin/ImageField';
@@ -383,7 +384,7 @@ export function PhotoEditPage() {
     if (!(await confirm({ title: 'Excluir esta foto?', text: 'A foto será removida da galeria e do armazenamento. Esta ação não pode ser desfeita.', confirmLabel: 'Excluir foto' }))) return;
     try {
       await adminApi.gallery.remove(photo.id);
-      d.commit(d.draft!);
+      flushSync(() => d.commit(d.draft!));
       queryClient.setQueryData(adminKeys.gallery, items.filter((g) => g.id !== photo.id));
       void queryClient.invalidateQueries({ queryKey: adminKeys.dashboard });
       refreshSite();

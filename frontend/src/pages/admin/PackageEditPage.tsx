@@ -11,6 +11,7 @@ import {
 } from '@cleides/shared';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 import { useNavigate, useParams, useSearchParams } from 'react-router';
 import { Icon } from '../../components/Icon';
 import { ImageField } from '../../components/admin/ImageField';
@@ -176,7 +177,7 @@ export function PackageEditPage() {
       void queryClient.invalidateQueries({ queryKey: adminKeys.dashboard });
       refreshSite();
       const fresh = list.find((p) => p.id === saved.id) ?? saved;
-      d.commit(toForm(fresh, list.indexOf(fresh)));
+      flushSync(() => d.commit(toForm(fresh, list.indexOf(fresh))));
       toast(status === 'published' ? (pkg?.status === 'published' ? 'Pacote atualizado no site.' : 'Pacote publicado no site!') : pkg?.status === 'published' ? 'Pacote tirado do ar (salvo como rascunho).' : 'Pacote salvo como rascunho.');
       if (isNew) navigate(`/admin/pacotes/${saved.id}`, { replace: true });
       return true;
@@ -483,7 +484,7 @@ export function PackageEditPage() {
                     if (!(await confirm({ title: 'Excluir este pacote?', text: `“${pkg!.name}” será removido definitivamente.`, confirmLabel: 'Excluir pacote' }))) return;
                     try {
                       await adminApi.packages.remove(pkg!.id);
-                      d.commit(d.draft!);
+                      flushSync(() => d.commit(d.draft!));
                       queryClient.setQueryData(adminKeys.packages, items.filter((p) => p.id !== pkg!.id));
                       void queryClient.invalidateQueries({ queryKey: adminKeys.dashboard });
                       refreshSite();

@@ -20,6 +20,8 @@ export interface PageEditor {
   saving: boolean;
   save: () => Promise<void>;
   discard: () => void;
+  /** Leitura sempre atualizada (usada pelo bloqueio de navegação logo após salvar). */
+  isDirty?: () => boolean;
 }
 
 interface AdminContextValue {
@@ -139,7 +141,7 @@ export function useRegisterEditor(editor: PageEditor): void {
   ref.current = editor;
   const { dirty, saving } = editor;
   useEffect(() => {
-    registerEditor({ dirty, saving, save: () => ref.current.save(), discard: () => ref.current.discard() });
+    registerEditor({ dirty, saving, save: () => ref.current.save(), discard: () => ref.current.discard(), isDirty: () => ref.current.dirty });
   }, [dirty, saving, registerEditor]);
   useEffect(() => () => registerEditor(null), [registerEditor]);
 }

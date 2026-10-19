@@ -22,10 +22,13 @@
     "typecheck": "npm run typecheck --workspaces --if-present",
     "lint": "eslint .",
     "seed": "npm run seed -w @cleides/backend",
-    "create-admin": "npm run create-admin -w @cleides/backend --"
+    "create-admin": "npm run create-admin -w @cleides/backend --",
+    "test:e2e": "playwright test",
+    "e2e:stack": "bash e2e/start-stack.sh"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.56.1",
     "concurrently": "^10.0.6",
     "eslint": "^10.13.0",
     "eslint-plugin-react-hooks": "^7.1.1",
