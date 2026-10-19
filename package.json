@@ -1,0 +1,36 @@
+{
+  "name": "cleides-fotografia",
+  "private": true,
+  "description": "Site e painel administrativo da Cleides Dias Fotografia",
+  "type": "module",
+  "workspaces": [
+    "shared",
+    "backend",
+    "frontend"
+  ],
+  "engines": {
+    "node": ">=22.22.0"
+  },
+  "scripts": {
+    "prepare": "git config core.hooksPath .githooks || true",
+    "dev": "npm run build -w @cleides/shared && concurrently -n api,web -c yellow,cyan \"npm run dev -w @cleides/backend\" \"npm run dev -w @cleides/frontend\"",
+    "build": "npm run build -w @cleides/shared && npm run build -w @cleides/backend && npm run build -w @cleides/frontend",
+    "build:backend": "npm run build -w @cleides/shared && npm run build -w @cleides/backend",
+    "build:frontend": "npm run build -w @cleides/frontend",
+    "start": "npm run start -w @cleides/backend",
+    "test": "npm run test --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "lint": "eslint .",
+    "seed": "npm run seed -w @cleides/backend",
+    "create-admin": "npm run create-admin -w @cleides/backend --"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "concurrently": "^10.0.6",
+    "eslint": "^10.13.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.13.0",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.71.2"
+  }
+}
