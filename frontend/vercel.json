@@ -3,7 +3,10 @@
   "framework": "vite",
   "installCommand": "cd .. && npm ci --include=dev",
   "buildCommand": "npm run build",
-  "rewrites": [{ "source": "/((?!assets/|images/|robots.txt|favicon).*)", "destination": "/index.html" }],
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "https://srv1388438.hstgr.cloud/cleides/api/:path*" },
+    { "source": "/((?!assets/|images/|robots.txt|favicon).*)", "destination": "/index.html" }
+  ],
   "headers": [
     {
       "source": "/(.*)",

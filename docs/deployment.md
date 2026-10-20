@@ -125,3 +125,13 @@ O `robots.txt` é gerado no build e aponta para o sitemap dinâmico da API
 - Mudanças no banco: crie uma nova migration (`npx supabase migration new <nome>`), teste localmente
   e aplique com `npx supabase db push` **antes** de publicar a nova versão da API.
 - O CI (`.github/workflows/ci.yml`) roda lint, tipos, testes, build e E2E em cada push.
+
+## API na VPS Hostinger (alternativa ao Render, em uso)
+
+A API roda na VPS `72.60.243.98` junto com outros projetos; o `render.yaml` foi removido.
+
+- Pasta: `/opt/projetos-borges/cleides-dias` (usuário `cleides`), segredos em `.env` nessa pasta (modo 600). Os segredos do Supabase e do Cloudinary ficam **só** na VPS; a Vercel recebe apenas variáveis `VITE_*` públicas.
+- Serviço: `systemctl status cleides-api` (porta 4000, `TRUST_PROXY=2`: Vercel + nginx). Logs: `journalctl -u cleides-api -f`.
+- nginx: `https://srv1388438.hstgr.cloud/cleides/` → `127.0.0.1:4000/`. O `frontend/vercel.json` repassa `/api/*` para `/cleides/api/*`, então o navegador usa o mesmo domínio da Vercel (sem CORS) e `VITE_API_URL=/api/v1`.
+- Limpeza de mídia: `cleides-media-cleanup.timer` (diário, 06:15), substitui o cron do Render.
+- Deploy: `./deploy.sh` (após commit) ou o workflow `Deploy API` (usa o segredo `VPS_DEPLOY_KEY`). A chave só executa `/usr/local/bin/deploy-cleides-dias` (instala, builda e reinicia).
