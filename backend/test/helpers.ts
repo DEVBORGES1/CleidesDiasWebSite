@@ -46,12 +46,12 @@ export class FakeStorage implements MediaStorage {
 export const ADMIN_TOKEN = 'token-admin';
 export const USER_TOKEN = 'token-usuario-comum';
 
-export function buildTestApp() {
+export function buildTestApp(options: { now?: () => Date } = {}) {
   const repos = createMemoryRepositories();
   const auth = new FakeAuthProvider();
   const storage = new FakeStorage();
   const logger = pino({ level: 'silent' });
-  const services = createServices({ repos, authProvider: auth, storage, logger });
+  const services = createServices({ repos, authProvider: auth, storage, logger, now: options.now });
   const app = createApp({
     env: { FRONTEND_URL: 'http://localhost:5173', SITE_URL: 'https://cleidesdias.com.br', TRUST_PROXY: 0, NODE_ENV: 'test' },
     logger,

@@ -8,7 +8,7 @@ O visual reproduz fielmente os dois mockups aprovados no Claude Design (site pú
 
 | Área | Endereço | O que faz |
 | --- | --- | --- |
-| Site público | `/` | Capa, pacotes (com detalhes em `/pacotes/:slug`), galeria com foto ampliada, sobre, como funciona, dúvidas, contato |
+| Site público | `/` | Capa, pacotes (com detalhes em `/pacotes/:slug`), galeria com foto ampliada, sobre, como funciona, valores por lote, dúvidas, contato |
 | Política de privacidade | `/privacidade` | Texto editável pelo painel |
 | Painel | `/admin` | Login, visão geral, edição de todo o conteúdo e prévia ao vivo |
 

@@ -82,6 +82,17 @@ export function adminController(s: Services) {
       reorder: async (req: Request, res: Response) => ok(res, await s.steps.reorder(idsOf(req))),
     },
 
+    lots: {
+      list: async (_req: Request, res: Response) => ok(res, await s.lots.list()),
+      get: async (req: Request, res: Response) => ok(res, await s.lots.get(idOf(req))),
+      create: async (req: Request, res: Response) => created(res, await s.lots.create(req.body)),
+      update: async (req: Request, res: Response) => ok(res, await s.lots.update(idOf(req), req.body)),
+      remove: async (req: Request, res: Response) => {
+        await s.lots.remove(idOf(req));
+        noContent(res);
+      },
+    },
+
     sections: {
       list: async (_req: Request, res: Response) => ok(res, await s.sections.getAll()),
       update: async (req: Request, res: Response) =>

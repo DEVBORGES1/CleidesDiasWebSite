@@ -96,6 +96,11 @@ export const DEMO_SECTIONS: SiteSections = {
     ],
     chatButton: 'Começar minha conversa',
   }),
+  lots: sectionSchemas.lots.parse({
+    title: 'Valores por lote',
+    subtitle: 'Quanto antes você garante, melhor o valor',
+    note: 'O valor do lote vale para ensaios agendados até a data de encerramento.',
+  }),
   faq: sectionSchemas.faq.parse({ title: 'Dúvidas frequentes', subtitle: 'Tudo o que você precisa saber' }),
   contact: sectionSchemas.contact.parse({
     eyebrow: 'Vamos registrar esse momento?',
@@ -274,6 +279,27 @@ export async function seedDemoContent(repos: Repositories, logger?: Logger): Pro
       await repos.steps.create({ ...s, note: '', image: null, status: 'published', position });
     }
     done.push('etapas');
+  }
+
+  // Lotes de exemplo ficam em rascunho: aparecem só na pré-visualização até o estúdio
+  // conferir datas e valores e publicá-los.
+  if ((await repos.lots.stats()).total === 0) {
+    const packages = await repos.packages.list();
+    const lots = [
+      { name: '1º lote', endsOn: '2026-10-31', diff: -50 },
+      { name: '2º lote', endsOn: '2026-11-30', diff: 0 },
+      { name: '3º lote', endsOn: '2026-12-15', diff: 60 },
+    ];
+    for (const [position, lot] of lots.entries()) {
+      await repos.lots.create({
+        name: lot.name,
+        endsOn: lot.endsOn,
+        prices: packages.filter((p) => p.price != null).map((p) => ({ packageId: p.id, price: Math.max(0, p.price! + lot.diff) })),
+        status: 'draft',
+        position,
+      });
+    }
+    done.push('lotes (rascunho)');
   }
 
   logger?.info({ seeded: done }, done.length ? 'Conteúdo de demonstração inserido' : 'Nada a semear: o conteúdo já existe');

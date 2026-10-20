@@ -7,6 +7,8 @@ export * from './packages.js';
 export * from './gallery.js';
 export * from './faq.js';
 export * from './steps.js';
+export * from './lots.js';
+export * from './lot-utils.js';
 export * from './media.js';
 export * from './site.js';
 export * from './text.js';

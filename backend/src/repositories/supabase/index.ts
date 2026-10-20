@@ -11,8 +11,10 @@ import type {
   GalleryImage,
   ImageRatio,
   ImageValue,
+  LotPrice,
   Package,
   PackageHighlight,
+  PriceLot,
   ProcessStep,
   PublicationStatus,
   SectionKey,
@@ -27,6 +29,8 @@ import type {
   GalleryListOptions,
   GalleryRecordInput,
   GalleryRepository,
+  LotRecordInput,
+  LotRepository,
   MediaRecord,
   MediaRepository,
   OrderedRepository,
@@ -305,6 +309,30 @@ class SupabaseSteps extends SupabaseOrdered<ProcessStep, StepRecordInput> {
   }
 }
 
+class SupabaseLots extends SupabaseOrdered<PriceLot, LotRecordInput> implements LotRepository {
+  protected readonly table = 'price_lots';
+  protected toDomain(r: Row): PriceLot {
+    return {
+      id: r.id as string,
+      name: r.name as string,
+      endsOn: r.ends_on as string,
+      prices: ((r.prices as LotPrice[] | null) ?? []).map((p) => ({ packageId: p.packageId, price: Number(p.price) })),
+      status: r.status as PublicationStatus,
+      position: r.position as number,
+      createdAt: r.created_at as string,
+      updatedAt: r.updated_at as string,
+    };
+  }
+  protected toRow(d: Partial<LotRecordInput>): Row {
+    return compact({ name: d.name, ends_on: d.endsOn, prices: d.prices, status: d.status });
+  }
+  async endsOnExists(endsOn: string, exceptId?: string): Promise<boolean> {
+    let q = this.db.from(this.table).select('id').eq('ends_on', endsOn);
+    if (exceptId) q = q.neq('id', exceptId);
+    return (check('price_lots.endsOnExists', await q) as Row[]).length > 0;
+  }
+}
+
 class SupabaseSettings implements SettingsRepository {
   constructor(private readonly db: SupabaseClient) {}
 
@@ -507,6 +535,7 @@ export function createSupabaseRepositories(db: SupabaseClient): Repositories {
     gallery: new SupabaseGallery(db),
     faq: new SupabaseFaq(db),
     steps: new SupabaseSteps(db),
+    lots: new SupabaseLots(db),
     settings: new SupabaseSettings(db),
     sections: new SupabaseSections(db),
     media: new SupabaseMedia(db),

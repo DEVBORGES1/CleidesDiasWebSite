@@ -1,4 +1,4 @@
-import { CONTENT_LIMITS, HIGHLIGHT_TYPES, formatPrice } from '@cleides/shared/utils';
+import { CONTENT_LIMITS, HIGHLIGHT_TYPES, formatDayMonth, formatPrice, lotPriceFor, todayIn, withLotPhases } from '@cleides/shared/utils';
 import type { Package } from '@cleides/shared';
 import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router';
 import { Icon } from '../../components/Icon';
 import { Button, Collapsible, EmptyState, IconButton, StatusPill, TextField, uiStyles } from '../../components/admin/ui';
 import { useAdmin } from '../../contexts/AdminContext';
-import { adminKeys, usePackages } from '../../hooks/useAdminData';
+import { adminKeys, useLots, usePackages } from '../../hooks/useAdminData';
 import { useDragReorder } from '../../hooks/useDragReorder';
 import { cdnUrl } from '../../lib/cdn';
 import { adminApi } from '../../services/api';
@@ -20,6 +20,7 @@ type Filter = 'todos' | 'published' | 'draft';
 
 export function PackagesPage() {
   const query = usePackages();
+  const currentLot = withLotPhases(useLots().data ?? [], todayIn()).find((l) => l.phase === 'current');
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { confirm, toast, refreshSite } = useAdmin();
@@ -155,6 +156,12 @@ export function PackagesPage() {
                         {p.price != null ? `R$ ${formatPrice(p.promoPrice ?? p.price)}` : <span className={styles.noPrice}>Sem preço</span>}
                       </span>
                     </div>
+                    {lotPriceFor(currentLot, p.id) != null && (
+                      <span className={styles.lotPrice}>
+                        No site: R$ {formatPrice(lotPriceFor(currentLot, p.id))} · {currentLot!.name} até {formatDayMonth(currentLot!.endsOn)}
+                        {currentLot!.status === 'draft' && ' (rascunho)'}
+                      </span>
+                    )}
                     {(p.subtitle || p.description) && <p className={styles.desc}>{p.subtitle || p.description}</p>}
                     {p.highlights.length > 0 && (
                       <div className={styles.feats}>

@@ -1,4 +1,5 @@
 import type { FaqItem } from './faq.js';
+import type { LotWithPhase } from './lot-utils.js';
 import type { GalleryImage } from './gallery.js';
 import type { Package } from './packages.js';
 import type { SiteSections } from './sections.js';
@@ -13,6 +14,13 @@ export interface PublicSite {
   gallery: GalleryImage[];
   faq: FaqItem[];
   steps: ProcessStep[];
+  /**
+   * Lotes de preço em ordem de encerramento, com a fase de cada um já decidida pela API.
+   * Fica vazio quando todos os lotes já terminaram (os pacotes voltam ao preço normal).
+   */
+  lots: LotWithPhase[];
+  /** Data de hoje (AAAA-MM-DD) no fuso do estúdio, usada para calcular as fases dos lotes. */
+  today: string;
   /** `true` quando o conteúdo inclui rascunhos (pré-visualização autenticada). */
   preview: boolean;
 }
@@ -28,8 +36,9 @@ export interface DashboardSummary {
   gallery: CollectionStats;
   faq: CollectionStats;
   steps: CollectionStats;
+  lots: CollectionStats;
   /** Seções que aparecem no site (as que não têm nada publicado ficam ocultas). */
-  visibleSections: { key: 'pacotes' | 'galeria' | 'como-funciona' | 'duvidas'; label: string; visible: boolean }[];
+  visibleSections: { key: 'pacotes' | 'galeria' | 'como-funciona' | 'lotes' | 'duvidas'; label: string; visible: boolean }[];
   pendingDrafts: number;
   unusedMedia: number;
   whatsappConfigured: boolean;

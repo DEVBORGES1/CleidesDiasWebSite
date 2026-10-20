@@ -1,4 +1,4 @@
-import { emptySections, siteSettingsSchema, type PublicSite } from '@cleides/shared';
+import { emptySections, siteSettingsSchema, withLotPhases, type Package, type PriceLot, type PublicSite } from '@cleides/shared';
 
 export function makeSite(overrides: Partial<PublicSite> = {}): PublicSite {
   const sections = emptySections();
@@ -18,7 +18,49 @@ export function makeSite(overrides: Partial<PublicSite> = {}): PublicSite {
     gallery: [],
     faq: [],
     steps: [],
+    lots: [],
+    today: '2026-11-20',
     preview: false,
     ...overrides,
   };
+}
+
+export function makePackage(id: string, name: string, price: number, extra: Partial<Package> = {}): Package {
+  return {
+    id,
+    slug: id,
+    name,
+    subtitle: '',
+    description: '',
+    category: '',
+    price,
+    promoPrice: null,
+    highlights: [],
+    includedItems: [],
+    extraInfo: '',
+    cover: null,
+    coverOnCard: false,
+    photos: [],
+    featured: false,
+    status: 'published',
+    position: 0,
+    createdAt: '',
+    updatedAt: '',
+    ...extra,
+  };
+}
+
+/** Lotes com fase calculada para o dia `today` (padrão: 20/11/2026). */
+export function makeLots(lots: [name: string, endsOn: string, prices: Record<string, number>][], today = '2026-11-20') {
+  const raw: PriceLot[] = lots.map(([name, endsOn, prices], position) => ({
+    id: `lote-${position}`,
+    name,
+    endsOn,
+    prices: Object.entries(prices).map(([packageId, price]) => ({ packageId, price })),
+    status: 'published',
+    position,
+    createdAt: '',
+    updatedAt: '',
+  }));
+  return withLotPhases(raw, today);
 }

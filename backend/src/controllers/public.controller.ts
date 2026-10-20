@@ -20,6 +20,8 @@ export function publicController(s: Services, siteUrl: string) {
     faq: async (req: Request, res: Response) => ok(res, await s.faq.list(parse(faqListQuerySchema, req.query), true)),
     howItWorks: async (_req: Request, res: Response) =>
       ok(res, { section: await s.sections.get('how'), steps: await s.steps.list(true) }),
+    lots: async (_req: Request, res: Response) =>
+      ok(res, { section: await s.sections.get('lots'), lots: await s.lots.forSite(false), today: s.lots.today() }),
     about: async (_req: Request, res: Response) => ok(res, await s.sections.get('about')),
     sitemap: async (_req: Request, res: Response) => {
       const base = siteUrl.replace(/\/$/, '');

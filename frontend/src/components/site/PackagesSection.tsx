@@ -1,4 +1,4 @@
-import { formatPrice } from '@cleides/shared/utils';
+import { formatDayMonth, formatPrice } from '@cleides/shared/utils';
 import type { Package } from '@cleides/shared';
 import type { SiteModel } from '../../pages/public/siteModel';
 import { FramedImage } from '../FramedImage';
@@ -31,6 +31,7 @@ export function PackagesSection({ model, compact, onOpen }: Props) {
               const featured = p.featured;
               const draft = p.status === 'draft';
               const cardImg = p.coverOnCard && !!p.cover?.url;
+              const pr = model.priceOf(p);
               return (
                 <button
                   key={p.id}
@@ -53,8 +54,13 @@ export function PackagesSection({ model, compact, onOpen }: Props) {
                     <span className={styles.mobileName}>{p.name}</span>
                     <span className={styles.mobileSummary}>{summary(p)}</span>
                     <span className={styles.mobilePrices}>
-                      {p.promoPrice != null && <span className={styles.oldPrice}>R$ {formatPrice(p.price)}</span>}
-                      {p.price != null && <span className={styles.mobilePrice}>R$ {formatPrice(p.promoPrice ?? p.price)}</span>}
+                      {pr.old != null && <span className={styles.oldPrice}>R$ {formatPrice(pr.old)}</span>}
+                      {pr.amount != null && <span className={styles.mobilePrice}>R$ {formatPrice(pr.amount)}</span>}
+                      {pr.lot && (
+                        <span className={styles.lotTag}>
+                          {pr.lot.name} · até {formatDayMonth(pr.lot.endsOn)}
+                        </span>
+                      )}
                     </span>
                   </span>
                   <span className={styles.arrow} data-featured={featured || undefined}>
@@ -71,6 +77,7 @@ export function PackagesSection({ model, compact, onOpen }: Props) {
               const featured = p.featured;
               const draft = p.status === 'draft';
               const cardImg = p.coverOnCard && !!p.cover?.url;
+              const pr = model.priceOf(p);
               return (
                 <article
                   key={p.id}
@@ -91,12 +98,22 @@ export function PackagesSection({ model, compact, onOpen }: Props) {
                   <h3 className={styles.cardName}>{p.name}</h3>
                   {p.subtitle && <p className={styles.cardSubtitle}>{p.subtitle}</p>}
                   <div className={styles.priceBlock}>
-                    {p.promoPrice != null && <span className={styles.oldPrice}>De R$ {formatPrice(p.price)}</span>}
-                    {p.price != null && (
+                    {pr.lot && (
+                      <span className={styles.lotTag}>
+                        {pr.lot.name} · até {formatDayMonth(pr.lot.endsOn)}
+                      </span>
+                    )}
+                    {pr.old != null && <span className={styles.oldPrice}>De R$ {formatPrice(pr.old)}</span>}
+                    {pr.amount != null && (
                       <div className={styles.price}>
                         <span className={styles.currency}>R$</span>
-                        <span className={styles.amount}>{formatPrice(p.promoPrice ?? p.price)}</span>
+                        <span className={styles.amount}>{formatPrice(pr.amount)}</span>
                       </div>
+                    )}
+                    {pr.next?.lot.startsOn && (
+                      <span className={styles.nextPrice}>
+                        A partir de {formatDayMonth(pr.next.lot.startsOn)}: R$ {formatPrice(pr.next.price)}
+                      </span>
                     )}
                   </div>
                   <div className={styles.divider} />

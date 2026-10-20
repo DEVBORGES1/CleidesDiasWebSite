@@ -5,6 +5,7 @@ import type { Repositories } from '../repositories/types.js';
 import { AuthService } from './auth.service.js';
 import { FaqService } from './faq.service.js';
 import { GalleryService } from './gallery.service.js';
+import { LotsService } from './lots.service.js';
 import { MediaService } from './media.service.js';
 import { PackagesService } from './packages.service.js';
 import { SectionsService } from './sections.service.js';
@@ -19,15 +20,24 @@ export interface Services {
   gallery: GalleryService;
   faq: FaqService;
   steps: StepsService;
+  lots: LotsService;
   sections: SectionsService;
   settings: SettingsService;
   site: SiteService;
 }
 
-export function createServices(deps: { repos: Repositories; authProvider: AuthProvider; storage: MediaStorage; logger: Logger }): Services {
+export function createServices(deps: {
+  repos: Repositories;
+  authProvider: AuthProvider;
+  storage: MediaStorage;
+  logger: Logger;
+  /** Relógio usado para decidir o lote atual (substituível nos testes). */
+  now?: () => Date;
+}): Services {
   const { repos } = deps;
   const media = new MediaService(repos, deps.storage, deps.logger);
   const sections = new SectionsService(repos, media);
+  const lots = new LotsService(repos, deps.now);
   return {
     auth: new AuthService(deps.authProvider, repos),
     media,
@@ -35,8 +45,9 @@ export function createServices(deps: { repos: Repositories; authProvider: AuthPr
     gallery: new GalleryService(repos, media, sections),
     faq: new FaqService(repos),
     steps: new StepsService(repos, media),
+    lots,
     sections,
     settings: new SettingsService(repos, media),
-    site: new SiteService(repos, sections, media),
+    site: new SiteService(repos, sections, media, lots),
   };
 }

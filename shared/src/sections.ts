@@ -63,6 +63,11 @@ function buildSectionSchemas<I extends ImgSchema>(img: I) {
         .default([]),
       chatButton: text(60).default(''),
     }),
+    lots: z.object({
+      title: text(80).default('Valores por lote'),
+      subtitle: text(160).default(''),
+      note: text(200).default(''),
+    }),
     faq: z.object({
       title: text(80).default(''),
       subtitle: text(160).default(''),
@@ -91,6 +96,7 @@ export type AboutSection = z.infer<typeof sectionSchemas.about>;
 export type PackagesSection = z.infer<typeof sectionSchemas.packages>;
 export type GallerySection = z.infer<typeof sectionSchemas.gallery>;
 export type HowSection = z.infer<typeof sectionSchemas.how>;
+export type LotsSection = z.infer<typeof sectionSchemas.lots>;
 export type FaqSection = z.infer<typeof sectionSchemas.faq>;
 export type ContactSection = z.infer<typeof sectionSchemas.contact>;
 export type LegalSection = z.infer<typeof sectionSchemas.legal>;
@@ -101,6 +107,7 @@ export interface SiteSections {
   packages: PackagesSection;
   gallery: GallerySection;
   how: HowSection;
+  lots: LotsSection;
   faq: FaqSection;
   contact: ContactSection;
   legal: LegalSection;
@@ -116,6 +123,7 @@ export function emptySections(): SiteSections {
     packages: sectionSchemas.packages.parse({}),
     gallery: sectionSchemas.gallery.parse({}),
     how: sectionSchemas.how.parse({}),
+    lots: sectionSchemas.lots.parse({}),
     faq: sectionSchemas.faq.parse({}),
     contact: sectionSchemas.contact.parse({}),
     legal: sectionSchemas.legal.parse({}),

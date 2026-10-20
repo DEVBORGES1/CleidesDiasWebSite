@@ -1,0 +1,283 @@
+.section {
+  padding: clamp(56px, 8cqi, 112px) clamp(20px, 4cqi, 56px);
+}
+.container {
+  max-width: 980px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(36px, 4cqi, 52px);
+}
+
+/* Linha do tempo: horizontal no computador, vertical no celular. */
+.timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(var(--lots, 3), minmax(0, 1fr));
+  gap: 0 12px;
+}
+.lot {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+.lot + .lot::before {
+  content: '';
+  position: absolute;
+  top: 15px;
+  right: calc(50% + 24px);
+  width: calc(100% - 36px);
+  height: 1px;
+  background: var(--gold-pale);
+}
+.dot {
+  position: relative;
+  z-index: 1;
+  width: 31px;
+  height: 31px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--gold-pale);
+  background: var(--sand);
+  color: var(--muted);
+}
+.lot[data-phase='current'] .dot {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: var(--surface);
+  box-shadow: 0 0 0 6px var(--bg), 0 0 0 7px var(--gold-pale);
+}
+.lot[data-phase='upcoming'] .dot {
+  border-style: dashed;
+  border-color: var(--gold-line);
+  background: var(--bg);
+}
+.dot[data-draft] {
+  outline: 1px dashed var(--gold-soft);
+  outline-offset: 3px;
+}
+.lotText {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+.lotName {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 4px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.lot[data-phase='current'] .lotName {
+  color: var(--primary);
+}
+.lotPhase {
+  white-space: nowrap;
+}
+.lotPeriod {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.lot[data-phase='current'] .lotPeriod {
+  color: var(--ink);
+}
+
+/* Tabela pacote × lote (computador). */
+.tableWrap {
+  width: 100%;
+  overflow-x: auto;
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  background: transparent;
+}
+.table th,
+.table td {
+  padding: 16px 12px;
+  text-align: center;
+  font-weight: 400;
+  border-bottom: 1px solid var(--sand);
+}
+.table thead th {
+  padding-top: 14px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-bottom-color: var(--sand-strong);
+}
+.table td {
+  font-size: 14px;
+  color: var(--text);
+}
+.table td[data-phase='ended'] {
+  font-size: 13px;
+  color: var(--muted);
+}
+.table td[data-phase='ended'] s {
+  text-decoration-color: var(--gold-line);
+}
+.table [data-phase='current'] {
+  background: var(--surface);
+  border-left: 1px solid var(--gold-line);
+  border-right: 1px solid var(--gold-line);
+}
+.table thead th[data-phase='current'] {
+  color: var(--primary);
+  border-top: 1px solid var(--gold-line);
+}
+.table tbody tr:last-child [data-phase='current'] {
+  border-bottom-color: var(--gold-line);
+}
+.table td[data-phase='current'] {
+  font-family: var(--font-serif);
+  font-size: 26px;
+  color: var(--price);
+}
+.pkgCol {
+  width: 30%;
+  text-align: left !important;
+}
+.pkgName {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: 20px;
+  line-height: 1.2;
+  color: var(--ink);
+}
+.pkgBadge {
+  display: block;
+  margin-top: 4px;
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+/* Cartões por pacote (celular). */
+.cards {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px 20px 18px;
+  background: var(--surface);
+  border: 1px solid var(--sand-strong);
+}
+.card[data-featured] {
+  border-color: var(--gold-line);
+}
+.cardHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.cardName {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: 21px;
+  line-height: 1.2;
+  color: var(--ink);
+}
+.cardPrice {
+  flex: none;
+  font-family: var(--font-serif);
+  font-size: 26px;
+  line-height: 1;
+  color: var(--price);
+}
+.cardLot {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+.cardNext {
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 10px 0 0;
+  border-top: 1px solid var(--sand);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.cardNext li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+.cardNext li span:last-child {
+  flex: none;
+  color: var(--text);
+}
+
+.note {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  border: 1px solid var(--sand);
+  border-radius: 16px;
+  background: var(--surface);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+@container (max-width: 640px) {
+  .timeline {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    max-width: 340px;
+  }
+  .lot {
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+    text-align: left;
+  }
+  .lot + .lot::before {
+    top: auto;
+    bottom: calc(100% - 8px);
+    left: 15px;
+    right: auto;
+    width: 1px;
+    height: 28px;
+  }
+  .lotText,
+  .lotName {
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+}

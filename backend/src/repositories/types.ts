@@ -5,9 +5,11 @@ import type {
   GalleryImage,
   ImageRatio,
   ImageValue,
+  LotPrice,
   MediaAsset,
   Package,
   PackageHighlight,
+  PriceLot,
   ProcessStep,
   PublicationStatus,
   SectionKey,
@@ -101,6 +103,16 @@ export interface StepRecordInput {
 }
 export type StepRepository = OrderedRepository<ProcessStep, StepRecordInput, StepRecordInput>;
 
+export interface LotRecordInput {
+  name: string;
+  endsOn: string;
+  prices: LotPrice[];
+  status: PublicationStatus;
+}
+export interface LotRepository extends OrderedRepository<PriceLot, LotRecordInput, LotRecordInput> {
+  endsOnExists(endsOn: string, exceptId?: string): Promise<boolean>;
+}
+
 export type SettingsRecord = Omit<SiteSettings, 'updatedAt'>;
 
 export interface SettingsRepository {
@@ -153,6 +165,7 @@ export interface Repositories {
   gallery: GalleryRepository;
   faq: FaqRepository;
   steps: StepRepository;
+  lots: LotRepository;
   settings: SettingsRepository;
   sections: SectionsRepository;
   media: MediaRepository;

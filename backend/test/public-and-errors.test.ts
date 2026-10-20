@@ -67,7 +67,9 @@ describe('consulta pública', () => {
       packages: { total: 3, published: 3, draft: 0, featured: 1 },
       faq: { total: 8, published: 7, draft: 1 },
       gallery: { total: 0 },
-      pendingDrafts: 1,
+      // Os lotes de exemplo entram como rascunho.
+      lots: { total: 3, published: 0, draft: 3 },
+      pendingDrafts: 4,
       whatsappConfigured: true,
     });
     expect(res.body.data.visibleSections.find((s: { key: string }) => s.key === 'galeria').visible).toBe(false);

@@ -49,7 +49,7 @@ upload/15 min.
 | Método | Rota | Descrição |
 | --- | --- | --- |
 | GET | `/health` | Verificação de saúde |
-| GET | `/site` | Tudo para a página inicial: `settings`, `sections`, `packages`, `gallery`, `faq`, `steps` |
+| GET | `/site` | Tudo para a página inicial: `settings`, `sections`, `packages`, `gallery`, `faq`, `steps`, `lots` (com a fase de cada lote: `ended`, `current` ou `upcoming`; vazio quando nenhum lote está valendo) e `today` |
 | GET | `/settings` | Configurações gerais |
 | GET | `/packages` | Pacotes publicados, na ordem definida |
 | GET | `/packages/:idOrSlug` | Um pacote publicado |
@@ -57,6 +57,7 @@ upload/15 min.
 | GET | `/gallery/categories` | Categorias com fotos publicadas |
 | GET | `/faq?q=&category=` | Perguntas publicadas (busca sem acentos) |
 | GET | `/how-it-works` | Textos da seção e etapas publicadas |
+| GET | `/lots` | Textos da seção "Valores por lote", lotes publicados com fase e `today` |
 | GET | `/about` | Seção "Sobre" |
 | GET | `/sitemap.xml` | Sitemap (início, pacotes publicados, privacidade) |
 
@@ -127,6 +128,8 @@ gerado do nome e não muda depois de publicado.
 | GET/PATCH/DELETE | `/admin/steps/:id` | Detalhe / atualiza / exclui |
 | POST | `/admin/steps/:id/duplicate` | Cópia em rascunho |
 | PUT | `/admin/steps/order` | Nova ordem |
+| GET/POST | `/admin/lots` | Lista (por data de encerramento) / cria `{ name, endsOn: 'AAAA-MM-DD', prices: [{ packageId, price }], status }` |
+| GET/PATCH/DELETE | `/admin/lots/:id` | Detalhe / atualiza / exclui |
 
 A resposta das perguntas aceita texto simples: linha em branco separa parágrafos e linhas iniciadas
 por `- ` viram listas.

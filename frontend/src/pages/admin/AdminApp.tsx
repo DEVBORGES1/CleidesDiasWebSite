@@ -10,6 +10,7 @@ import { DashboardPage } from './DashboardPage';
 import { FaqPage } from './FaqPage';
 import { GalleryPage, PhotoEditPage } from './GalleryPage';
 import { HeroPage } from './HeroPage';
+import { LotsPage } from './LotsPage';
 import { PackageEditPage } from './PackageEditPage';
 import { PackagesPage } from './PackagesPage';
 import { SettingsPage } from './SettingsPage';
@@ -60,6 +61,7 @@ export default function AdminApp() {
         <Route path="pacotes" element={<PackagesPage />} />
         <Route path="pacotes/novo" element={<PackageEditPage />} />
         <Route path="pacotes/:id" element={<PackageEditPage />} />
+        <Route path="lotes" element={<LotsPage />} />
         <Route path="configuracoes" element={<SettingsPage />} />
         <Route path="*" element={<Navigate to="/admin" replace />} />
       </Route>

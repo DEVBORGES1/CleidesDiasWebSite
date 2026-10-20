@@ -114,7 +114,7 @@ export function SiteHeader({ model, compact, scrolled, active, onNav, onOpenPack
                                   .join(' · ')}
                               </span>
                             </span>
-                            {p.price != null && <span className={styles.ddPrice}>R$ {formatPrice(p.promoPrice ?? p.price)}</span>}
+                            {model.priceOf(p).amount != null && <span className={styles.ddPrice}>R$ {formatPrice(model.priceOf(p).amount)}</span>}
                           </button>
                         ))}
                         <a

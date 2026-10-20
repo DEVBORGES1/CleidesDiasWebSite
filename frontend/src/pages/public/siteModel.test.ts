@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { makeSite } from '../../test/fixtures';
+import { makeLots, makePackage, makeSite } from '../../test/fixtures';
 import { buildSiteModel } from './siteModel';
 
 describe('modelo do site público', () => {
@@ -12,12 +12,33 @@ describe('modelo do site público', () => {
 
   it('oculta seções sem conteúdo publicado', () => {
     const m = buildSiteModel(makeSite());
-    expect(m.show).toEqual({ packages: false, gallery: false, faq: false, how: false });
+    expect(m.show).toEqual({ packages: false, gallery: false, faq: false, how: false, lots: false });
   });
 
   it('sem WhatsApp configurado, os botões levam ao contato', () => {
     const site = makeSite();
     site.settings.whatsappNumber = '';
     expect(buildSiteModel(site).links.schedule).toBe('#contato');
+  });
+
+  it('os pacotes mostram o valor do lote atual e o do próximo lote', () => {
+    const mini = makePackage('mini', 'Mini Natal', 350, { promoPrice: 320 });
+    const familia = makePackage('familia', 'Família', 790);
+    const lots = makeLots([
+      ['1º lote', '2026-10-31', { mini: 300 }],
+      ['2º lote', '2026-11-30', { mini: 330 }],
+      ['3º lote', '2026-12-15', { mini: 400 }],
+    ]);
+    const m = buildSiteModel(makeSite({ packages: [mini, familia], lots }));
+    expect(m.priceOf(mini)).toMatchObject({ amount: 330, old: null, lot: { name: '2º lote' }, next: { price: 400, lot: { name: '3º lote' } } });
+    // Pacote sem valor nos lotes continua com o preço normal e fica fora da tabela.
+    expect(m.priceOf(familia)).toMatchObject({ amount: 790, lot: null, next: null });
+    expect(m.lotPackages.map((p) => p.id)).toEqual(['mini']);
+    expect(m.show.lots).toBe(true);
+  });
+
+  it('sem lotes, vale o preço promocional', () => {
+    const mini = makePackage('mini', 'Mini Natal', 350, { promoPrice: 320 });
+    expect(buildSiteModel(makeSite({ packages: [mini] })).priceOf(mini)).toMatchObject({ amount: 320, old: 350, lot: null });
   });
 });

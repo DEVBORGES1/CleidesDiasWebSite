@@ -5,3 +5,4 @@
 export * from './constants.js';
 export * from './text.js';
 export * from './image-utils.js';
+export * from './lot-utils.js';

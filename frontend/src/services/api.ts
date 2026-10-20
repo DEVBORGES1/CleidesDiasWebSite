@@ -7,11 +7,14 @@ import type {
   GalleryCreateInput,
   GalleryImage,
   GalleryUpdateInput,
+  LotCreateInput,
+  LotUpdateInput,
   MediaAsset,
   MediaCleanupResult,
   Package,
   PackageCreateInput,
   PackageUpdateInput,
+  PriceLot,
   ProcessStep,
   PublicSite,
   PublicationStatus,
@@ -81,6 +84,13 @@ export const adminApi = {
     remove: (id: string) => data(request<void>(`/admin/steps/${id}`, { method: 'DELETE', auth: true })),
     duplicate: (id: string) => data(request<ProcessStep>(`/admin/steps/${id}/duplicate`, { method: 'POST', auth: true })),
     reorder: (ids: string[]) => data(request<ProcessStep[]>('/admin/steps/order', { method: 'PUT', body: { ids }, auth: true })),
+  },
+
+  lots: {
+    list: () => data(request<PriceLot[]>('/admin/lots', { auth: true })),
+    create: (body: LotCreateInput) => data(request<PriceLot>('/admin/lots', { method: 'POST', body, auth: true })),
+    update: (id: string, body: LotUpdateInput) => data(request<PriceLot>(`/admin/lots/${id}`, { method: 'PATCH', body, auth: true })),
+    remove: (id: string) => data(request<void>(`/admin/lots/${id}`, { method: 'DELETE', auth: true })),
   },
 
   sections: {

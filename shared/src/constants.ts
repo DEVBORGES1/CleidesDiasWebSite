@@ -34,7 +34,7 @@ export const STEP_ICONS = [
 export type StepIcon = (typeof STEP_ICONS)[number];
 
 /** Chaves das seções editáveis armazenadas em `site_sections`. */
-export const SECTION_KEYS = ['hero', 'about', 'packages', 'gallery', 'how', 'faq', 'contact', 'legal'] as const;
+export const SECTION_KEYS = ['hero', 'about', 'packages', 'gallery', 'how', 'lots', 'faq', 'contact', 'legal'] as const;
 export type SectionKey = (typeof SECTION_KEYS)[number];
 
 /** Finalidades de upload (definem a pasta no Cloudinary). */
@@ -61,6 +61,7 @@ export const CONTENT_LIMITS = {
   galleryImages: 500,
   faqItems: 200,
   steps: 30,
+  lots: 12,
   listItems: 12,
   ticks: 16,
 } as const;

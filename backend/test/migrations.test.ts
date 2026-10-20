@@ -48,6 +48,15 @@ describe('migrations SQL', () => {
     await expect(db.query('select public.reorder_rows($1, $2)', ['profiles', ids])).rejects.toThrow(/não permitida/);
   });
 
+  it('lotes: um por dia de encerramento e textos da seção aceitos', async () => {
+    await db.query(`insert into public.price_lots (name, ends_on, prices) values ('1º lote', '2026-10-31', '[]')`);
+    await expect(db.query(`insert into public.price_lots (name, ends_on) values ('Outro', '2026-10-31')`)).rejects.toThrow(/unique/);
+    await expect(db.query(`insert into public.price_lots (name, ends_on, prices) values ('X', '2026-11-30', '{}')`)).rejects.toThrow(/check/);
+    await db.query(`insert into public.site_sections (key, content) values ('lots', '{}')`);
+    await expect(db.query(`insert into public.site_sections (key, content) values ('outra', '{}')`)).rejects.toThrow(/site_sections_key_check/);
+    await db.query('select public.reorder_rows($1, $2)', ['price_lots', []]);
+  });
+
   it('RLS: visitante só lê conteúdo publicado e não consegue escrever', async () => {
     await db.exec(`
       insert into public.faq_items (question, answer, status) values ('Pública', 'Sim', 'published'), ('Rascunho', 'Não', 'draft');

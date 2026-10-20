@@ -18,6 +18,7 @@ export function publicRoutes(services: Services, siteUrl: string): Router {
   r.get('/gallery/categories', c.galleryCategories);
   r.get('/faq', c.faq);
   r.get('/how-it-works', c.howItWorks);
+  r.get('/lots', c.lots);
   r.get('/about', c.about);
   r.get('/sitemap.xml', c.sitemap);
   return r;
@@ -67,6 +68,12 @@ export function adminRoutes(services: Services): Router {
   r.patch('/steps/:id', c.steps.update);
   r.delete('/steps/:id', c.steps.remove);
   r.post('/steps/:id/duplicate', c.steps.duplicate);
+
+  r.get('/lots', c.lots.list);
+  r.post('/lots', c.lots.create);
+  r.get('/lots/:id', c.lots.get);
+  r.patch('/lots/:id', c.lots.update);
+  r.delete('/lots/:id', c.lots.remove);
 
   r.get('/sections', c.sections.list);
   r.patch('/sections/:key', c.sections.update);

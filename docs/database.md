@@ -1,7 +1,7 @@
 # Banco de dados (Supabase PostgreSQL)
 
 As migrations ficam em `backend/supabase/migrations/` e seguem o formato do Supabase CLI
-(`<timestamp>_<nome>.sql`). A migration inicial é validada automaticamente nos testes
+(`<timestamp>_<nome>.sql`). As migrations são validadas automaticamente nos testes
 (`backend/test/migrations.test.ts`) em um PostgreSQL real (PGlite), incluindo as políticas RLS.
 
 ## Tabelas
@@ -10,11 +10,12 @@ As migrations ficam em `backend/supabase/migrations/` e seguem o formato do Supa
 | --- | --- |
 | `profiles` | Perfis administrativos (`id` = usuário do Supabase Auth, `role = 'admin'`). Criados apenas pelo script `create-admin`. |
 | `site_settings` | Linha única (`id = 1`): marca, WhatsApp, telefone, Instagram, cidade, e-mail, redes sociais, mensagens do WhatsApp, rótulos do menu, rodapé, SEO, logotipo e imagem de compartilhamento. |
-| `site_sections` | Conteúdo de cada seção (`hero`, `about`, `packages`, `gallery`, `how`, `faq`, `contact`, `legal`) em `jsonb`, validado pelos schemas de `@cleides/shared`. |
+| `site_sections` | Conteúdo de cada seção (`hero`, `about`, `packages`, `gallery`, `how`, `lots`, `faq`, `contact`, `legal`) em `jsonb`, validado pelos schemas de `@cleides/shared`. |
 | `packages` | Pacotes: slug, nome, subtítulo, descrição, categoria, preço, preço promocional, destaques (`jsonb`), itens incluídos (`text[]`), informações adicionais, capa e fotos (`jsonb`), destaque, status e posição. |
 | `gallery_images` | Fotos da galeria: arquivo (`asset_id` → `media_assets`), título, descrição, categoria (álbum), texto alternativo, enquadramento (ponto focal, zoom, formato), status e posição. |
 | `faq_items` | Perguntas e respostas, categoria opcional, status e posição. |
 | `process_steps` | Etapas do "Como funciona": título, descrição, texto complementar, ícone, imagem opcional, status e posição. |
+| `price_lots` | Valores por lote: nome, último dia do lote (`ends_on`, único), valores de cada pacote (`prices` em `jsonb`: `[{ packageId, price }]`), status e posição. O lote começa no dia seguinte ao fim do anterior; a API decide o lote atual pela data no fuso de São Paulo. |
 | `media_assets` | Arquivos do Cloudinary: `public_id`, finalidade, status (`pending` → `active` → `deleted`), URL, formato, dimensões e tamanho. |
 
 Todas as tabelas de conteúdo têm `created_at`/`updated_at` (atualizado por trigger), `status`
@@ -28,6 +29,7 @@ Todas as tabelas de conteúdo têm `created_at`/`updated_at` (atualizado por tri
 - `media_assets`: arquivo ativo exige URL HTTPS, formato (`jpg`/`png`/`webp`) e dimensões.
 - `gallery_images.asset_id` → `media_assets.id` com `ON DELETE RESTRICT` (não é possível apagar um
   arquivo em uso).
+- `price_lots`: um lote por dia de encerramento; `prices` precisa ser uma lista.
 - Índices em `(status, position)` de cada coleção, categoria da galeria e status/data dos arquivos.
 
 ## Funções

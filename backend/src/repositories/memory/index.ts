@@ -9,6 +9,7 @@ import type {
   FaqItem,
   GalleryImage,
   Package,
+  PriceLot,
   ProcessStep,
   PublicationStatus,
   SectionKey,
@@ -21,6 +22,8 @@ import type {
   GalleryListOptions,
   GalleryRecordInput,
   GalleryRepository,
+  LotRecordInput,
+  LotRepository,
   MediaRecord,
   MediaRepository,
   OrderedRepository,
@@ -177,6 +180,15 @@ class MemorySteps extends MemoryOrdered<ProcessStep, ProcessStep, StepRecordInpu
   }
 }
 
+class MemoryLots extends MemoryOrdered<PriceLot, PriceLot, LotRecordInput> implements LotRepository {
+  constructor() {
+    super(merge);
+  }
+  async endsOnExists(endsOn: string, exceptId?: string) {
+    return [...this.rows.values()].some((r) => r.endsOn === endsOn && r.id !== exceptId);
+  }
+}
+
 class MemorySettings implements SettingsRepository {
   private value: SiteSettings = siteSettingsSchema.parse({ brandName: 'Cleides Dias', logo: null, seoImage: null, updatedAt: now() });
   async get() {
@@ -284,6 +296,7 @@ export function createMemoryRepositories(): Repositories & { media: MemoryMedia;
     gallery: new MemoryGallery(media),
     faq: new MemoryFaq(),
     steps: new MemorySteps(),
+    lots: new MemoryLots(),
     settings: new MemorySettings(),
     sections: new MemorySections(),
     media,

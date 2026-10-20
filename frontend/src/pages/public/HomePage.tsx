@@ -11,6 +11,7 @@ import { GallerySection, Marquee } from '../../components/site/GallerySection';
 import { Hero } from '../../components/site/Hero';
 import { HowSection } from '../../components/site/HowSection';
 import { Lightbox } from '../../components/site/Lightbox';
+import { LotsSection } from '../../components/site/LotsSection';
 import { MobileMenu, TabBar, WhatsAppFab } from '../../components/site/MobileChrome';
 import { PackageDetail } from '../../components/site/PackageDetail';
 import { PackagesSection } from '../../components/site/PackagesSection';
@@ -171,6 +172,7 @@ function Home({ data, previewRequestedWithoutLogin }: { data: Parameters<typeof 
           <Marquee words={model.sections.gallery.ticks} />
           <AboutSection model={model} compact={compact} onNav={onNav} />
           {model.show.how && <HowSection model={model} compact={compact} />}
+          {model.show.lots && <LotsSection model={model} compact={compact} />}
           {model.show.faq && <FaqSection model={model} />}
           <ContactSection model={model} compact={compact} />
         </main>

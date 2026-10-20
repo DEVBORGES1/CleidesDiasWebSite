@@ -1,9 +1,9 @@
-import { CONTENT_LIMITS, HIGHLIGHT_TYPES, IMAGE_UPLOAD_RULES, formatPrice } from '@cleides/shared/utils';
-import type { HighlightType, ImageValue, Package, PackageHighlight, PublicationStatus } from '@cleides/shared';
+import { CONTENT_LIMITS, HIGHLIGHT_TYPES, IMAGE_UPLOAD_RULES, formatDayMonth, formatPrice, lotPriceFor, todayIn, withLotPhases } from '@cleides/shared/utils';
+import type { HighlightType, ImageValue, Package, PackageHighlight, PriceLot, PublicationStatus } from '@cleides/shared';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
-import { useNavigate, useParams, useSearchParams } from 'react-router';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router';
 import { Icon } from '../../components/Icon';
 import { ImageField } from '../../components/admin/ImageField';
 import {
@@ -25,7 +25,7 @@ import {
   uiStyles,
 } from '../../components/admin/ui';
 import { useAdmin, useRegisterEditor } from '../../contexts/AdminContext';
-import { adminKeys, useMediaStatus, usePackages } from '../../hooks/useAdminData';
+import { adminKeys, useLots, useMediaStatus, usePackages } from '../../hooks/useAdminData';
 import { useDraft } from '../../hooks/useDraft';
 import { moveTo } from '../../hooks/useDragReorder';
 import { cdnUrl } from '../../lib/cdn';
@@ -33,10 +33,12 @@ import { adminApi } from '../../services/api';
 import { ApiError, errorMessage } from '../../services/http';
 import { imageFromAsset, toImageInput, uploadImage } from '../../services/uploads';
 import { BackLink, PageError, PageHeader, PageLoading } from './common';
+import { LOT_PHASE_LABEL } from './LotsPage';
 import forms from './forms.module.css';
 import styles from './PackageEditPage.module.css';
 
 const EMPTY: Package[] = [];
+const EMPTY_LOTS: PriceLot[] = [];
 
 interface PackageForm {
   name: string;
@@ -54,6 +56,8 @@ interface PackageForm {
   featured: boolean;
   status: PublicationStatus;
   position: number;
+  /** Valor do pacote em cada lote (id do lote → texto digitado; vazio = preço normal). */
+  lotPrices: Record<string, string>;
 }
 
 const TABS = [
@@ -70,7 +74,8 @@ const parsePrice = (v: string) => {
   return v.trim() === '' || Number.isNaN(n) ? null : n;
 };
 
-function toForm(p: Package | undefined, position: number): PackageForm {
+function toForm(p: Package | undefined, position: number, lots: PriceLot[]): PackageForm {
+  const lotPrices = Object.fromEntries(lots.map((l) => [l.id, p ? priceText(lotPriceFor(l, p.id)) : '']));
   if (!p)
     return {
       name: '',
@@ -88,6 +93,7 @@ function toForm(p: Package | undefined, position: number): PackageForm {
       featured: false,
       status: 'draft',
       position,
+      lotPrices,
     };
   return {
     name: p.name,
@@ -105,6 +111,7 @@ function toForm(p: Package | undefined, position: number): PackageForm {
     featured: p.featured,
     status: p.status,
     position,
+    lotPrices,
   };
 }
 
@@ -114,13 +121,19 @@ export function PackageEditPage() {
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const query = usePackages();
+  const lotsQuery = useLots();
+  // Sem conseguir carregar os lotes, o pacote continua editável (só sem os valores por lote).
+  const lots = lotsQuery.data ?? (lotsQuery.isError ? EMPTY_LOTS : undefined);
   const media = useMediaStatus();
   const queryClient = useQueryClient();
   const { toast, refreshSite, confirm } = useAdmin();
   const items = query.data ?? EMPTY;
   const index = items.findIndex((p) => p.id === id);
   const pkg = index >= 0 ? items[index] : undefined;
-  const server = useMemo(() => (query.data ? toForm(pkg, pkg ? index : items.length) : undefined), [query.data, pkg, index, items.length]);
+  const server = useMemo(
+    () => (query.data && lots ? toForm(pkg, pkg ? index : items.length, lots) : undefined),
+    [query.data, lots, pkg, index, items.length],
+  );
   const d = useDraft<PackageForm>(server);
   const [tab, setTab] = useState<TabKey>((params.get('etapa') as TabKey) || 'info');
   const [saving, setSaving] = useState<'primary' | 'secondary' | null>(null);
@@ -167,10 +180,11 @@ export function PackageEditPage() {
       let list = await adminApi.packages.list();
       if (list.findIndex((p) => p.id === saved.id) !== f.position) list = await adminApi.packages.reorder(moveTo(list.map((p) => p.id), saved.id, f.position));
       queryClient.setQueryData(adminKeys.packages, list);
+      const freshLots = await saveLotPrices(saved.id, f.lotPrices);
       void queryClient.invalidateQueries({ queryKey: adminKeys.dashboard });
       refreshSite();
       const fresh = list.find((p) => p.id === saved.id) ?? saved;
-      flushSync(() => d.commit(toForm(fresh, list.indexOf(fresh))));
+      flushSync(() => d.commit(toForm(fresh, list.indexOf(fresh), freshLots)));
       toast(status === 'published' ? (pkg?.status === 'published' ? 'Pacote atualizado no site.' : 'Pacote publicado no site!') : pkg?.status === 'published' ? 'Pacote tirado do ar (salvo como rascunho).' : 'Pacote salvo como rascunho.');
       if (isNew) navigate(`/admin/pacotes/${saved.id}`, { replace: true });
       return true;
@@ -184,6 +198,26 @@ export function PackageEditPage() {
     } finally {
       setSaving(null);
     }
+  }
+
+  /** Grava nos lotes só os valores deste pacote que mudaram (os demais pacotes não são tocados). */
+  async function saveLotPrices(packageId: string, edited: Record<string, string>): Promise<PriceLot[]> {
+    if (Object.keys(edited).length === 0) return lots ?? EMPTY_LOTS;
+    const current = await adminApi.lots.list();
+    let changed = false;
+    for (const lot of current) {
+      // Lotes criados em outra aba depois que a página abriu não são alterados.
+      if (!(lot.id in edited)) continue;
+      const next = parsePrice(edited[lot.id] ?? '');
+      if (next === lotPriceFor(lot, packageId)) continue;
+      const prices = lot.prices.filter((x) => x.packageId !== packageId);
+      if (next != null) prices.push({ packageId, price: next });
+      await adminApi.lots.update(lot.id, { prices });
+      changed = true;
+    }
+    const fresh = changed ? await adminApi.lots.list() : current;
+    queryClient.setQueryData(adminKeys.lots, fresh);
+    return fresh;
   }
 
   const currentStatus = pkg?.status ?? 'draft';
@@ -223,6 +257,7 @@ export function PackageEditPage() {
   if (!f) return <PageLoading />;
 
   const set = (p: Partial<PackageForm>) => d.patch(p);
+  const lotPhases = withLotPhases(lots ?? EMPTY_LOTS, todayIn());
   const tabIndex = TABS.findIndex((t) => t.key === tab);
   const done: Record<TabKey, boolean> = {
     info: !!f.name.trim() && !!f.price.trim(),
@@ -314,6 +349,27 @@ export function PackageEditPage() {
                 </div>
               )}
             </div>
+            <div className={forms.subhead}>
+              <span className={forms.subheadTitle}>Valores por lote</span>
+              <span className={forms.subheadText}>
+                Enquanto um lote estiver valendo, o valor dele aparece no lugar do preço acima. Em branco, vale o preço normal.{' '}
+                <Link to="/admin/lotes">{lotPhases.length ? 'Gerenciar lotes' : 'Criar lotes de preço'}</Link>
+              </span>
+            </div>
+            {lotPhases.length > 0 && (
+              <div className={uiStyles.grid2}>
+                {lotPhases.map((lot) => (
+                  <MoneyField
+                    key={lot.id}
+                    label={`${lot.name} · até ${formatDayMonth(lot.endsOn)}`}
+                    value={f.lotPrices[lot.id] ?? ''}
+                    placeholder={f.price || '0'}
+                    hint={`${LOT_PHASE_LABEL[lot.phase]}${lot.status === 'draft' ? ' · lote em rascunho' : ''}`}
+                    onChange={(v) => set({ lotPrices: { ...f.lotPrices, [lot.id]: v } })}
+                  />
+                ))}
+              </div>
+            )}
           </Card>
         </>
       )}

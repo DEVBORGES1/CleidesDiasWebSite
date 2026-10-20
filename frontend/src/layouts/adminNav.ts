@@ -17,6 +17,7 @@ export const ADMIN_NAV: AdminNavItem[] = [
   { id: 'faq', path: '/admin/duvidas', label: 'Dúvidas frequentes', icon: 'help', group: 'Conteúdo do site', sec: 'duvidas' },
   { id: 'contato', path: '/admin/contato', label: 'Contato e rodapé', icon: 'chat', group: 'Conteúdo do site', sec: 'contato' },
   { id: 'pacotes', path: '/admin/pacotes', label: 'Pacotes e valores', icon: 'sell', group: 'Vendas e serviços', sec: 'pacotes' },
+  { id: 'lotes', path: '/admin/lotes', label: 'Valores por lote', icon: 'confirmation_number', group: 'Vendas e serviços', sec: 'lotes' },
   { id: 'config', path: '/admin/configuracoes', label: 'Configurações avançadas', icon: 'tune', group: 'Avançado', sec: 'inicio' },
 ];
 
@@ -29,6 +30,7 @@ export const SEC_TO_PATH: Record<string, string> = {
   faixa: '/admin/galeria',
   sobre: '/admin/sobre',
   'como-funciona': '/admin/como-funciona',
+  lotes: '/admin/lotes',
   duvidas: '/admin/duvidas',
   contato: '/admin/contato',
   rodape: '/admin/contato',

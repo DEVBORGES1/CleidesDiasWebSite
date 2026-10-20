@@ -1,4 +1,4 @@
-import { HIGHLIGHT_TYPES, formatPrice } from '@cleides/shared/utils';
+import { HIGHLIGHT_TYPES, formatDayMonth, formatPrice } from '@cleides/shared/utils';
 import type { Package } from '@cleides/shared';
 import { useState } from 'react';
 import { useBodyLock } from '../../hooks/useBodyLock';
@@ -17,6 +17,7 @@ interface Props {
 }
 
 export function PackageDetail({ model, pkg, compact, onClose }: Props) {
+  const pr = model.priceOf(pkg);
   const ref = useDialog<HTMLDivElement>(true, onClose);
   useBodyLock(true);
   const images = [pkg.cover, ...pkg.photos].filter((i): i is NonNullable<typeof i> => !!i?.url);
@@ -71,13 +72,19 @@ export function PackageDetail({ model, pkg, compact, onClose }: Props) {
             <h3 id="package-detail-title" className={styles.title}>
               {pkg.name}
             </h3>
-            {pkg.price != null && (
+            {pr.amount != null && (
               <span className={styles.prices}>
-                {pkg.promoPrice != null && <span className={styles.oldPrice}>R$ {formatPrice(pkg.price)}</span>}
-                <span className={styles.price}>R$ {formatPrice(pkg.promoPrice ?? pkg.price)}</span>
+                {pr.old != null && <span className={styles.oldPrice}>R$ {formatPrice(pr.old)}</span>}
+                <span className={styles.price}>R$ {formatPrice(pr.amount)}</span>
               </span>
             )}
           </div>
+          {pr.lot && (
+            <p className={styles.lotNote}>
+              {pr.lot.name} · até {formatDayMonth(pr.lot.endsOn)}
+              {pr.next?.lot.startsOn && ` · a partir de ${formatDayMonth(pr.next.lot.startsOn)}: R$ ${formatPrice(pr.next.price)}`}
+            </p>
+          )}
           {feats.length > 0 && (
             <div className={styles.feats}>
               {feats.map((f, i) => (
