@@ -40,6 +40,7 @@ export const adminApi = {
   me: () => data(request<AdminProfile>('/admin/me', { auth: true })),
   dashboard: () => data(request<DashboardSummary>('/admin/dashboard', { auth: true })),
   preview: () => data(request<PublicSite>('/admin/preview', { auth: true })),
+  seedDemo: () => data(request<{ seeded: string[] }>('/admin/demo-content', { method: 'POST', auth: true })),
 
   packages: {
     list: () => data(request<Package[]>('/admin/packages', { auth: true })),

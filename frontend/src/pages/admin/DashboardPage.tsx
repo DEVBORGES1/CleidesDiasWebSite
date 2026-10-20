@@ -1,8 +1,12 @@
+import { useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
 import { Link } from 'react-router';
 import { Icon } from '../../components/Icon';
-import { Alert, Card } from '../../components/admin/ui';
+import { Alert, Button, Card } from '../../components/admin/ui';
+import { useAdmin } from '../../contexts/AdminContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { useDashboard } from '../../hooks/useAdminData';
+import { adminApi } from '../../services/api';
 import { PageError, PageHeader, PageLoading } from './common';
 import styles from './DashboardPage.module.css';
 
@@ -23,6 +27,20 @@ export function DashboardPage() {
   const q = useDashboard();
   const d = q.data;
   const name = profile?.fullName?.split(' ')[0];
+  const { run, toast, refreshSite } = useAdmin();
+  const queryClient = useQueryClient();
+  const [seeding, setSeeding] = useState(false);
+  const missingContent = !!d && (!d.whatsappConfigured || !d.packages.total || !d.faq.total || !d.steps.total);
+
+  const seedDemo = async () => {
+    setSeeding(true);
+    const r = await run(() => adminApi.seedDemo());
+    setSeeding(false);
+    if (!r) return;
+    toast(r.seeded.length ? 'Conteúdo inicial carregado.' : 'Nada a carregar: o conteúdo já existe.');
+    void queryClient.invalidateQueries();
+    refreshSite();
+  };
 
   const stats = d
     ? [
@@ -60,6 +78,19 @@ export function DashboardPage() {
               Abrir site
             </a>
           </section>
+
+          {missingContent && (
+            <Card
+              title="Conteúdo inicial"
+              description="Preenche o que ainda está vazio com os textos, fotos, pacotes, dúvidas e etapas do modelo aprovado. Nada do que você já editou é substituído."
+            >
+              <div>
+                <Button variant="primary" icon="auto_awesome" loading={seeding} onClick={seedDemo}>
+                  Carregar conteúdo inicial
+                </Button>
+              </div>
+            </Card>
+          )}
 
           {!d.whatsappConfigured && (
             <Alert icon="warning">

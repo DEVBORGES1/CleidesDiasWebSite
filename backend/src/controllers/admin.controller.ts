@@ -21,6 +21,7 @@ export function adminController(s: Services) {
   return {
     me: (_req: Request, res: Response) => ok(res, currentAdmin(res)),
     dashboard: async (_req: Request, res: Response) => ok(res, await s.site.dashboard()),
+    seedDemo: async (_req: Request, res: Response) => ok(res, await s.site.seedDemo()),
     preview: async (_req: Request, res: Response) => ok(res, await s.site.getSite(true)),
 
     packages: {

@@ -1,5 +1,6 @@
 import type { DashboardSummary, PublicSite } from '@cleides/shared';
 import type { Repositories } from '../repositories/types.js';
+import { seedDemoContent } from '../seed/demo-content.js';
 import type { MediaService } from './media.service.js';
 import type { SectionsService } from './sections.service.js';
 
@@ -25,6 +26,11 @@ export class SiteService {
       this.repos.steps.list({ status }),
     ]);
     return { settings, sections, packages, gallery, faq, steps, preview };
+  }
+
+  /** Preenche com o conteúdo inicial apenas o que ainda está vazio (nunca sobrescreve). */
+  async seedDemo(): Promise<{ seeded: string[] }> {
+    return { seeded: await seedDemoContent(this.repos) };
   }
 
   async dashboard(): Promise<DashboardSummary> {

@@ -103,3 +103,28 @@ describe('seções e configurações', () => {
     expect((await request.get('/api/v1/settings')).body.data.city).toBe('Videira – SC');
   });
 });
+
+describe('conteúdo inicial', () => {
+  it('preenche só o que está vazio e não repete', async () => {
+    const { admin, request } = buildTestApp();
+    await admin.post('/api/v1/admin/faq', { question: 'Minha pergunta', answer: 'Minha resposta', status: 'published' });
+
+    const first = await admin.post('/api/v1/admin/demo-content');
+    expect(first.status).toBe(200);
+    expect(first.body.data.seeded).toContain('pacotes');
+    expect(first.body.data.seeded).not.toContain('dúvidas frequentes');
+
+    const site = (await request.get('/api/v1/site')).body.data;
+    expect(site.sections.hero.title).toBe('Registre a magia deste Natal');
+    expect(site.sections.hero.image.url).toBe('/images/capa.webp');
+    expect(site.settings.whatsappNumber).toBe('5549999569245');
+    expect(site.faq.map((f: { question: string }) => f.question)).toEqual(['Minha pergunta']);
+
+    expect((await admin.post('/api/v1/admin/demo-content')).body.data.seeded).toEqual([]);
+  });
+
+  it('exige administradora', async () => {
+    const { request } = buildTestApp();
+    expect((await request.post('/api/v1/admin/demo-content')).status).toBe(401);
+  });
+});

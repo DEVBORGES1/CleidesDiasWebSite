@@ -31,6 +31,7 @@ export function adminRoutes(services: Services): Router {
   r.get('/me', c.me);
   r.get('/dashboard', c.dashboard);
   r.get('/preview', c.preview);
+  r.post('/demo-content', c.seedDemo);
 
   r.get('/packages', c.packages.list);
   r.post('/packages', c.packages.create);
