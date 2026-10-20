@@ -22,6 +22,21 @@ const ABOUT_IMAGE = {
   ratio: 'auto' as const,
 };
 
+const HERO_IMAGE = {
+  ...ABOUT_IMAGE,
+  url: '/images/capa.webp',
+  width: 1080,
+  height: 756,
+  alt: 'Ensaio de Natal no estúdio',
+  y: 50,
+};
+
+const CONTACT_IMAGE = {
+  ...HERO_IMAGE,
+  url: '/images/contato.webp',
+  alt: 'Ensaio de Natal',
+};
+
 export const DEMO_SECTIONS: SiteSections = {
   hero: sectionSchemas.hero.parse({
     eyebrow: 'Natal é sobre amor',
@@ -30,7 +45,7 @@ export const DEMO_SECTIONS: SiteSections = {
     primaryButton: 'Conheça os pacotes',
     secondaryButton: 'Ver galeria',
     benefits: ['Atendimento personalizado', 'Fotos em alta resolução', 'Cenários temáticos de Natal', 'Qualidade e muito carinho'],
-    image: null,
+    image: HERO_IMAGE,
   }),
   about: sectionSchemas.about.parse({
     eyebrow: 'Quem vai fotografar vocês',
@@ -88,7 +103,7 @@ export const DEMO_SECTIONS: SiteSections = {
     text: 'Chame no WhatsApp, conte quem vai participar e a data que você deseja. Respondemos com as datas disponíveis e todos os detalhes.',
     buttonLabel: 'Agendar pelo WhatsApp',
     note: 'A data é confirmada pelo estúdio durante a conversa.',
-    image: null,
+    image: CONTACT_IMAGE,
   }),
   legal: sectionSchemas.legal.parse({
     privacyText:
