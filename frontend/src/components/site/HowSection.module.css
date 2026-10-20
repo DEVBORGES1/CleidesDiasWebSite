@@ -311,7 +311,7 @@
   font-size: 14px;
   line-height: 1.45;
   color: var(--ink);
-  animation: v2Rise 0.4s ease both;
+  animation: global(v2Rise) 0.4s ease both;
 }
 .bubble[data-me] {
   align-self: flex-end;
@@ -332,14 +332,14 @@
   padding: 14px 16px;
   border-radius: 16px 16px 16px 4px;
   background: var(--surface);
-  animation: v2Rise 0.3s ease both;
+  animation: global(v2Rise) 0.3s ease both;
 }
 .typing span {
   width: 7px;
   height: 7px;
   border-radius: 50%;
   background: #a89887;
-  animation: v2Dot 1.2s infinite;
+  animation: global(v2Dot) 1.2s infinite;
 }
 .typing span:nth-child(2) {
   animation-delay: 0.2s;

@@ -382,7 +382,7 @@
   border-radius: 50%;
   border: 2.5px solid var(--sand-strong);
   border-top-color: var(--primary);
-  animation: cmsSpin 0.8s linear infinite;
+  animation: global(cmsSpin) 0.8s linear infinite;
 }
 
 .listRow {
@@ -416,7 +416,7 @@
   place-items: center;
   padding: 20px;
   background: rgba(63, 49, 40, 0.38);
-  animation: v2Fade 0.2s ease both;
+  animation: global(v2Fade) 0.2s ease both;
 }
 .dialog {
   width: min(420px, 100%);
@@ -428,7 +428,7 @@
   border-radius: 18px;
   background: var(--surface);
   box-shadow: 0 40px 80px -30px rgba(63, 49, 40, 0.5);
-  animation: v2Zoom 0.25s var(--ease-out) both;
+  animation: global(v2Zoom) 0.25s var(--ease-out) both;
   outline: none;
 }
 .dialogIcon {
@@ -478,7 +478,7 @@
   font-size: 13px;
   line-height: 1.45;
   box-shadow: 0 20px 40px -20px rgba(63, 49, 40, 0.5);
-  animation: v2Rise 0.3s ease both;
+  animation: global(v2Rise) 0.3s ease both;
 }
 .toastError {
   background: #7d3a24;

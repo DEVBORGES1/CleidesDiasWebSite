@@ -196,7 +196,7 @@
 .marqueeTrack {
   display: flex;
   width: max-content;
-  animation: v2Marquee 48s linear infinite;
+  animation: global(v2Marquee) 48s linear infinite;
 }
 .marqueeGroup {
   display: flex;

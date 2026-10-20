@@ -15,7 +15,7 @@
   border-radius: 50%;
   border: 2.5px solid var(--sand-strong);
   border-top-color: var(--primary);
-  animation: cmsSpin 0.8s linear infinite;
+  animation: global(cmsSpin) 0.8s linear infinite;
 }
 .title {
   margin: 0;

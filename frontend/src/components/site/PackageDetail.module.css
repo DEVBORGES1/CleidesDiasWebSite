@@ -6,7 +6,7 @@
   display: grid;
   place-items: center;
   padding: 20px;
-  animation: v2Fade 0.3s ease both;
+  animation: global(v2Fade) 0.3s ease both;
 }
 .backdrop[data-compact] {
   place-items: end center;
@@ -19,14 +19,14 @@
   overflow-y: auto;
   background: var(--surface);
   box-shadow: 0 40px 90px -40px rgba(0, 0, 0, 0.5);
-  animation: v2Zoom 0.4s var(--ease-out) both;
+  animation: global(v2Zoom) 0.4s var(--ease-out) both;
   outline: none;
 }
 .dialog[data-compact] {
   width: 100%;
   max-height: 92%;
   border-radius: 22px 22px 0 0;
-  animation: v2Sheet 0.45s var(--ease-out) both;
+  animation: global(v2Sheet) 0.45s var(--ease-out) both;
 }
 .media {
   position: relative;

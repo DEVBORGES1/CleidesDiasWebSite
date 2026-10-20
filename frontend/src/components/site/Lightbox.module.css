@@ -5,7 +5,7 @@
   background: rgba(250, 246, 239, 0.98);
   display: flex;
   flex-direction: column;
-  animation: v2Fade 0.35s ease both;
+  animation: global(v2Fade) 0.35s ease both;
   outline: none;
 }
 .top {
@@ -49,7 +49,7 @@
   overflow: hidden;
   background: var(--placeholder);
   box-shadow: 0 40px 80px -50px rgba(63, 49, 40, 0.5);
-  animation: v2Zoom 0.45s var(--ease-out) both;
+  animation: global(v2Zoom) 0.45s var(--ease-out) both;
 }
 .bottom {
   flex: none;

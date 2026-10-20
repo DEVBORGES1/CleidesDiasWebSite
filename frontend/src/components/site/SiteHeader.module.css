@@ -130,7 +130,7 @@
   border: 1px solid var(--sand);
   border-radius: 18px;
   box-shadow: 0 30px 60px -30px rgba(63, 49, 40, 0.45);
-  animation: v2Rise 0.25s ease both;
+  animation: global(v2Rise) 0.25s ease both;
 }
 .ddItem {
   width: 100%;
