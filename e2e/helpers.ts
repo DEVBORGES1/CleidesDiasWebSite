@@ -1,7 +1,8 @@
+import { fileURLToPath } from 'node:url';
 import type { Page } from '@playwright/test';
 
 export const ADMIN = { email: 'cleides@example.com', password: 'senha-segura-123' };
-export const fixture = (name: string) => new URL(`./fixtures/${name}`, import.meta.url).pathname;
+export const fixture = (name: string) => fileURLToPath(new URL(`./fixtures/${name}`, import.meta.url));
 
 export async function login(page: Page) {
   await page.goto('/admin/entrar');
