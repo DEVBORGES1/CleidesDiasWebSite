@@ -1,6 +1,6 @@
 import type { ImageValue, SectionKey, SiteSections, SiteSettings, SiteSettingsUpdate } from '@cleides/shared';
 import { useQueryClient } from '@tanstack/react-query';
-import { useCallback, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useState, type ReactNode } from 'react';
 import { Icon } from '../../components/Icon';
 import { Alert, Button, Spinner } from '../../components/admin/ui';
 import { useAdmin, useRegisterEditor, type PageEditor } from '../../contexts/AdminContext';
@@ -80,12 +80,19 @@ export interface FormEditor<T> extends PageEditor {
   errors: ApiError | null;
 }
 
+/** Mostra na prévia, ao vivo, a edição ainda não salva (e a retira ao sair da página). */
+function useLiveDraft(scope: string, value: unknown, send: (scope: string, value: unknown) => void): void {
+  useEffect(() => send(scope, value ?? null), [scope, value, send]);
+  useEffect(() => () => send(scope, null), [scope, send]);
+}
+
 /** Edição de uma seção do site (textos e imagens), salva pelo botão do topo. */
 export function useSectionEditor<K extends SectionKey>(key: K): FormEditor<SiteSections[K]> & { loading: boolean; error: unknown } {
   const query = useSections();
   const queryClient = useQueryClient();
-  const { refreshSite } = useAdmin();
+  const { refreshSite, previewDraft } = useAdmin();
   const d = useDraft<SiteSections[K]>(query.data?.[key]);
+  useLiveDraft(`sections.${key}`, d.dirty ? d.draft : null, previewDraft);
   const [saving, setSaving] = useState(false);
   const [errors, setErrors] = useState<ApiError | null>(null);
 
@@ -113,8 +120,9 @@ export function useSectionEditor<K extends SectionKey>(key: K): FormEditor<SiteS
 export function useSettingsEditor(): FormEditor<SiteSettings> & { loading: boolean; error: unknown } {
   const query = useSettings();
   const queryClient = useQueryClient();
-  const { refreshSite } = useAdmin();
+  const { refreshSite, previewDraft } = useAdmin();
   const d = useDraft<SiteSettings>(query.data);
+  useLiveDraft('settings', d.dirty ? d.draft : null, previewDraft);
   const [saving, setSaving] = useState(false);
   const [errors, setErrors] = useState<ApiError | null>(null);
 

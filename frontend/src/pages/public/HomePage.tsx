@@ -1,4 +1,4 @@
-import type { GalleryImage, Package } from '@cleides/shared';
+import type { GalleryImage, Package, PublicSite, SiteSections, SiteSettings } from '@cleides/shared';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router';
@@ -39,24 +39,52 @@ export function HomePage() {
   const query = useSite(preview);
   const queryClient = useQueryClient();
 
-  // O painel pede para atualizar a prévia sempre que algo é salvo.
+  // Dentro do painel: edições ainda não salvas chegam por mensagem e aparecem ao vivo, e o
+  // painel pede para atualizar sempre que algo é salvo. Durante a atualização, a edição recém-salva
+  // continua na tela até os dados novos chegarem (sem piscar o conteúdo antigo).
+  const [draft, setDraft] = useState<Record<string, unknown>>({});
   useEffect(() => {
-    if (!preview) return;
+    if (window.parent === window) return;
+    let refreshing: Promise<unknown> | null = null;
     const onMessage = (e: MessageEvent) => {
-      if (e.origin === window.location.origin && e.data?.type === 'cleides:refresh') {
-        void queryClient.invalidateQueries({ queryKey: siteQueryKey(true) });
+      if (e.origin !== window.location.origin) return;
+      if (e.data?.type === 'cleides:refresh') {
+        const current: Promise<unknown> = queryClient.refetchQueries({ queryKey: siteQueryKey(preview) });
+        refreshing = current;
+        void current.then(() => {
+          if (refreshing === current) refreshing = null;
+        });
+      }
+      if (e.data?.type === 'cleides:draft') {
+        const next = (e.data.draft ?? {}) as Record<string, unknown>;
+        if (refreshing) void refreshing.then(() => setDraft(next));
+        else setDraft(next);
       }
     };
     window.addEventListener('message', onMessage);
+    window.parent.postMessage({ type: 'cleides:ready' }, window.location.origin);
     return () => window.removeEventListener('message', onMessage);
   }, [preview, queryClient]);
+  const data = useMemo(() => query.data && applyDraft(query.data, draft), [query.data, draft]);
 
   if (waitingAuth || query.isPending) return <SiteLoading />;
-  if (query.isError || !query.data) return <SiteError onRetry={() => query.refetch()} />;
+  if (query.isError || !data) return <SiteError onRetry={() => query.refetch()} />;
   // Pacote inexistente, excluído ou despublicado: link quebrado vira 404. Fica fora de `Home`
   // para que, ao voltar ao início, os efeitos de rolagem sejam montados no novo elemento raiz.
-  if (slug && !query.data.packages.some((p) => p.slug === slug)) return <NotFoundPage />;
-  return <Home data={query.data} previewRequestedWithoutLogin={wantsPreview && !preview} />;
+  if (slug && !data.packages.some((p) => p.slug === slug)) return <NotFoundPage />;
+  return <Home data={data} previewRequestedWithoutLogin={wantsPreview && !preview} />;
+}
+
+function applyDraft(site: PublicSite, draft: Record<string, unknown>): PublicSite {
+  const entries = Object.entries(draft);
+  if (entries.length === 0) return site;
+  const sections: SiteSections = { ...site.sections };
+  let settings = site.settings;
+  for (const [scope, value] of entries) {
+    if (scope === 'settings') settings = { ...settings, ...(value as SiteSettings) };
+    else if (scope.startsWith('sections.')) Object.assign(sections, { [scope.slice(9)]: value });
+  }
+  return { ...site, sections, settings };
 }
 
 function Home({ data, previewRequestedWithoutLogin }: { data: Parameters<typeof buildSiteModel>[0]; previewRequestedWithoutLogin: boolean }) {

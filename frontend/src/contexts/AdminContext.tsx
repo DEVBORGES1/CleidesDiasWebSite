@@ -31,6 +31,11 @@ interface AdminContextValue {
   registerEditor(editor: PageEditor | null): void;
   /** Invalida os dados do site e atualiza a prévia. */
   refreshSite(): void;
+  /**
+   * Envia à prévia uma edição ainda não salva (`sections.<chave>` ou `settings`),
+   * para ela aparecer ao vivo. `null` remove a edição pendente.
+   */
+  previewDraft(scope: string, value: unknown): void;
   /** Executa uma ação mostrando toast de sucesso ou de erro. */
   run<T>(action: () => Promise<T>, success?: string): Promise<T | undefined>;
 }
@@ -84,6 +89,29 @@ export function AdminProvider({ children, previewFrame }: { children: ReactNode;
     previewFrame.current?.contentWindow?.postMessage({ type: 'cleides:refresh' }, window.location.origin);
   }, [queryClient, previewFrame]);
 
+  const drafts = useRef<Record<string, unknown>>({});
+  const sendDrafts = useCallback(() => {
+    previewFrame.current?.contentWindow?.postMessage({ type: 'cleides:draft', draft: drafts.current }, window.location.origin);
+  }, [previewFrame]);
+  const previewDraft = useCallback(
+    (scope: string, value: unknown) => {
+      if (value === null && !(scope in drafts.current)) return;
+      const { [scope]: _old, ...rest } = drafts.current;
+      drafts.current = value === null ? rest : { ...rest, [scope]: value };
+      sendDrafts();
+    },
+    [sendDrafts],
+  );
+
+  // A prévia avisa quando (re)carrega; reenviamos as edições pendentes.
+  useEffect(() => {
+    const onMessage = (e: MessageEvent) => {
+      if (e.origin === window.location.origin && e.data?.type === 'cleides:ready') sendDrafts();
+    };
+    window.addEventListener('message', onMessage);
+    return () => window.removeEventListener('message', onMessage);
+  }, [sendDrafts]);
+
   const value = useMemo<AdminContextValue>(
     () => ({
       confirm: (options) => new Promise<boolean>((resolve) => setConfirmState({ options, resolve })),
@@ -91,6 +119,7 @@ export function AdminProvider({ children, previewFrame }: { children: ReactNode;
       editor,
       registerEditor: setEditor,
       refreshSite,
+      previewDraft,
       async run(action, success) {
         try {
           const result = await action();
@@ -103,7 +132,7 @@ export function AdminProvider({ children, previewFrame }: { children: ReactNode;
         }
       },
     }),
-    [toast, editor, refreshSite],
+    [toast, editor, refreshSite, previewDraft],
   );
 
   return (
