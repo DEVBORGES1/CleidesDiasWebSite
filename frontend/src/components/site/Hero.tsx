@@ -32,7 +32,7 @@ export function Hero({ model, compact, onNav }: Props) {
             <div data-parallax="0.06" className={styles.parallax}>
               <FramedImage image={hero.image} sizes="100vw" eager />
             </div>
-            <Sparkles count={10} seed={11} />
+            <Sparkles count={14} seed={11} />
             <div className={styles.mobileFade} />
           </div>
           <div className={styles.mobileBody}>
@@ -64,7 +64,7 @@ export function Hero({ model, compact, onNav }: Props) {
             </div>
             <div className={styles.mediaFade} />
           </div>
-          <Sparkles count={18} seed={7} />
+          <Sparkles count={24} seed={7} />
           <div className={styles.content}>
             <div className={styles.copy}>
               <Ornament />

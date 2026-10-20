@@ -6,7 +6,7 @@ const rng = (seed: number) => () => (seed = (seed * 16807) % 2147483647) / 21474
 export const Sparkles = memo(function Sparkles({ count, seed }: { count: number; seed: number }) {
   const r = rng(seed);
   const items = Array.from({ length: count }, (_, i) => {
-    const size = 2 + r() * 3.5;
+    const size = 2.5 + r() * 4;
     const fall = 18 + r() * 16;
     const sway = 5 + r() * 5;
     const tw = 3 + r() * 4;
@@ -28,7 +28,7 @@ export const Sparkles = memo(function Sparkles({ count, seed }: { count: number;
               height: size,
               borderRadius: '50%',
               background: gold ? '#E9CF98' : '#FFF8EA',
-              boxShadow: `0 0 ${(size * 2).toFixed(1)}px ${(size * 0.6).toFixed(1)}px ${gold ? 'rgba(233,207,152,0.55)' : 'rgba(255,248,234,0.6)'}`,
+              boxShadow: `0 0 ${(size * 2.2).toFixed(1)}px ${(size * 0.75).toFixed(1)}px ${gold ? 'rgba(233,207,152,0.7)' : 'rgba(255,248,234,0.75)'}`,
               animation: `v2Twinkle ${tw.toFixed(1)}s ease-in-out ${twDelay}s infinite`,
             }}
           />

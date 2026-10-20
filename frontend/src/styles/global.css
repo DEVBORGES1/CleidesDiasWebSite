@@ -125,7 +125,7 @@ a:hover {
 @keyframes v2Zoom { from { opacity: 0; transform: scale(.97) } to { opacity: 1; transform: none } }
 @keyframes v2Fall { from { transform: translateY(-6%) } to { transform: translateY(106%) } }
 @keyframes v2Sway { 0%, 100% { transform: translateX(-9px) } 50% { transform: translateX(9px) } }
-@keyframes v2Twinkle { 0%, 100% { opacity: .2 } 50% { opacity: .85 } }
+@keyframes v2Twinkle { 0%, 100% { opacity: .35 } 50% { opacity: 1 } }
 @keyframes v2Glow { 0%, 100% { opacity: .18; transform: scale(.9) } 50% { opacity: .7; transform: scale(1.04) } }
 @keyframes v2Sheet { from { transform: translateY(100%) } to { transform: none } }
 @keyframes v2Marquee { from { transform: translateX(0) } to { transform: translateX(-50%) } }
