@@ -29,7 +29,7 @@ test.describe('gestão de conteúdo', () => {
     await expect(page.getByText('Alterações não salvas')).toBeVisible();
 
     const chooser = page.waitForEvent('filechooser');
-    await page.getByRole('button', { name: 'Selecionar foto' }).click();
+    await page.getByRole('button', { name: 'Substituir' }).first().click();
     await (await chooser).setFiles(fixture('foto-a.jpg'));
     await expect(page.getByText('Foto enviada')).toBeVisible();
     await page.getByLabel(/Descrição da foto/).fill('Família no cenário de Natal');
