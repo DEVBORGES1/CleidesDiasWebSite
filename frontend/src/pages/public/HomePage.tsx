@@ -20,12 +20,14 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useCompact, useReducedMotion } from '../../hooks/useMediaQuery';
 import { scrollToSection, useParallax, usePreviewBridge, useReveal, useScrollState, type SectionId } from '../../hooks/useSiteEffects';
 import { siteQueryKey, useSite } from '../../hooks/useSite';
+import { NotFoundPage } from './NotFoundPage';
 import { buildSiteModel } from './siteModel';
 import { SiteError, SiteLoading } from './SiteStates';
 import styles from './HomePage.module.css';
 
 export function HomePage() {
   const [params] = useSearchParams();
+  const { slug } = useParams();
   const auth = useAuth();
   const wantsPreview = params.get('preview') === '1';
   const preview = wantsPreview && auth.status === 'signedIn';
@@ -51,6 +53,9 @@ export function HomePage() {
 
   if (waitingAuth || query.isPending) return <SiteLoading />;
   if (query.isError || !query.data) return <SiteError onRetry={() => query.refetch()} />;
+  // Pacote inexistente, excluído ou despublicado: link quebrado vira 404. Fica fora de `Home`
+  // para que, ao voltar ao início, os efeitos de rolagem sejam montados no novo elemento raiz.
+  if (slug && !query.data.packages.some((p) => p.slug === slug)) return <NotFoundPage />;
   return <Home data={query.data} previewRequestedWithoutLogin={wantsPreview && !preview} />;
 }
 
