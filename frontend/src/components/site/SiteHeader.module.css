@@ -47,42 +47,9 @@
 
 .logo {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 3px;
   text-decoration: none;
-  color: var(--ink);
   flex: none;
-}
-.header[data-pill] .logo {
-  flex-direction: row;
-  gap: 10px;
-}
-.logoText {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
-.header[data-pill] .logoText {
-  align-items: flex-start;
-}
-.brand {
-  font-family: var(--font-serif);
-  font-weight: 500;
-  font-size: clamp(18px, 1.5cqi, 21px);
-  line-height: 1;
-  white-space: nowrap;
-}
-.brandSub {
-  font-size: 8px;
-  font-weight: 500;
-  line-height: 1;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  /* Texto de 8px: precisa do tom mais escuro para manter contraste legível. */
-  color: var(--primary);
-  white-space: nowrap;
 }
 
 .nav {
@@ -229,8 +196,13 @@
 }
 
 .logoImg {
-  height: 28px;
+  display: block;
+  height: clamp(44px, 4cqi, 54px);
   width: auto;
-  max-width: 80px;
+  max-width: 240px;
   object-fit: contain;
+  transition: height 0.45s ease;
+}
+.header[data-pill] .logoImg {
+  height: 40px;
 }

@@ -55,7 +55,7 @@ export function SettingsPage() {
               <span className={uiStyles.label}>
                 Logotipo <span className={uiStyles.labelNote}>· opcional</span>
               </span>
-              <span className={uiStyles.hint}>Se enviado, substitui o ícone da câmera ao lado do nome no topo do site. Prefira PNG com fundo transparente.</span>
+              <span className={uiStyles.hint}>Se enviado, substitui a logo padrão no topo do site. Prefira PNG horizontal com fundo transparente.</span>
             </div>
             <ImageField value={s.logo} onChange={(logo) => settings.patch({ logo })} purpose="brand" frame="auto" maxHeight={120} />
           </Card>

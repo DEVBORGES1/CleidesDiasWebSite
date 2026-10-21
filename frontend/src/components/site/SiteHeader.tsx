@@ -50,15 +50,13 @@ export function SiteHeader({ model, compact, scrolled, active, onNav, onOpenPack
             onNav('inicio');
           }}
         >
-          {settings.logo?.url ? (
-            <img src={cdnUrl(settings.logo.url, 160)} alt="" className={styles.logoImg} />
-          ) : (
-            <Icon name="photo_camera" size={20} color="var(--gold)" />
-          )}
-          <span className={styles.logoText}>
-            <span className={styles.brand}>{settings.brandName}</span>
-            {settings.brandSubtitle && <span className={styles.brandSub}>{settings.brandSubtitle}</span>}
-          </span>
+          <img
+            src={settings.logo?.url ? cdnUrl(settings.logo.url, 480) : '/images/logo.webp'}
+            alt={settings.brandName}
+            className={styles.logoImg}
+            width={788}
+            height={200}
+          />
         </a>
 
         {!compact && (
