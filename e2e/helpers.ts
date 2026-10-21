@@ -1,6 +1,10 @@
 import { fileURLToPath } from 'node:url';
 import type { Page } from '@playwright/test';
 
+/** Endereços da pilha de testes (portas configuráveis em WEB_PORT/API_PORT, como no start-stack.sh). */
+export const WEB_URL = `http://localhost:${process.env.WEB_PORT ?? 5173}`;
+export const API_URL = `http://localhost:${process.env.API_PORT ?? 4000}/api/v1`;
+
 export const ADMIN = { email: 'cleides@example.com', password: 'senha-segura-123' };
 export const fixture = (name: string) => fileURLToPath(new URL(`./fixtures/${name}`, import.meta.url));
 

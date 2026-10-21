@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { fixture, login } from './helpers';
+import { API_URL, WEB_URL, fixture, login } from './helpers';
 
 test.describe.configure({ mode: 'serial' });
 
@@ -14,9 +14,9 @@ test.describe('segurança do painel', () => {
   });
 
   test('a API recusa operações administrativas sem login', async ({ request }) => {
-    const res = await request.post('http://localhost:4000/api/v1/admin/packages', { data: { name: 'Invasão' } });
+    const res = await request.post(`${API_URL}/admin/packages`, { data: { name: 'Invasão' } });
     expect(res.status()).toBe(401);
-    const preview = await request.get('http://localhost:4000/api/v1/admin/preview');
+    const preview = await request.get(`${API_URL}/admin/preview`);
     expect(preview.status()).toBe(401);
   });
 });
@@ -189,7 +189,7 @@ test.describe('gestão de conteúdo', () => {
     await expect(page.getByText('Receba as fotos (cópia)')).toBeVisible();
 
     const visitor = await browser.newPage();
-    await visitor.goto('http://localhost:5173/?preview=1');
+    await visitor.goto(`${WEB_URL}/?preview=1`);
     await expect(visitor.getByText('Entre no painel para ver os rascunhos na pré-visualização.')).toBeVisible();
     await expect(visitor.getByText('Receba as fotos (cópia)')).toHaveCount(0);
   });
