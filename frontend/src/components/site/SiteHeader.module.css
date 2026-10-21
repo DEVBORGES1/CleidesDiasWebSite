@@ -206,3 +206,15 @@
 .header[data-pill] .logoImg {
   height: 54px;
 }
+
+/* Pílula flutuante no celular: mais baixa e com margens menores. */
+.header[data-pill][data-compact] {
+  padding: 8px 12px 0;
+}
+.header[data-pill][data-compact] .inner {
+  height: 58px;
+  padding: 0 4px 0 16px;
+}
+.header[data-pill][data-compact] .logoImg {
+  height: 44px;
+}

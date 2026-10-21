@@ -20,7 +20,7 @@ interface Props {
 export function SiteHeader({ model, compact, scrolled, active, onNav, onOpenPackage, onOpenMenu }: Props) {
   const { settings, nav, show } = model;
   const [dd, setDd] = useState(false);
-  const pill = scrolled && !compact;
+  const pill = scrolled;
 
   const link = (id: SectionId, label: string) => (
     <a
@@ -39,7 +39,7 @@ export function SiteHeader({ model, compact, scrolled, active, onNav, onOpenPack
   );
 
   return (
-    <header data-header="" data-pick="cabecalho" className={styles.header} data-pill={pill || undefined}>
+    <header data-header="" data-pick="cabecalho" className={styles.header} data-pill={pill || undefined} data-compact={compact || undefined}>
       <div className={styles.inner}>
         <a
           href="#inicio"
