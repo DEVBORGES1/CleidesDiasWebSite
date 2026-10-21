@@ -27,6 +27,12 @@ describe('migrations SQL', () => {
     expect(r.rows[0]?.count).toBe(1);
   });
 
+  it('preenche o slogan do estúdio e limita o tamanho', async () => {
+    const r = await db.query<{ slogan: string }>('select slogan from public.site_settings where id = 1');
+    expect(r.rows[0]?.slogan).toMatch(/^Especialista em capturar o amor/);
+    await expect(db.query(`update public.site_settings set slogan = repeat('x', 161) where id = 1`)).rejects.toThrow(/check/);
+  });
+
   it('impede publicar pacote sem preço e promocional maior que o preço', async () => {
     await expect(
       db.query(`insert into public.packages (slug, name, status) values ('a', 'A', 'published')`),

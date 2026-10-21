@@ -54,6 +54,7 @@ export function AboutSection({ model, compact, onNav }: Props) {
           <h2 id="sobre-title" className={styles.title}>
             {a.titleStart} {a.titleHighlight && <em>{a.titleHighlight}</em>}
           </h2>
+          {model.settings.slogan && <p className={styles.slogan}>{model.settings.slogan}</p>}
           {paragraphs.map((p, i) => (
             <p key={i} className={styles.paragraph}>
               {p}

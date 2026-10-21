@@ -62,6 +62,7 @@ const seoSchema = z.object({
 const settingsShape = {
   brandName: requiredText(80, 'O nome do estúdio'),
   brandSubtitle: text(80).default(''),
+  slogan: text(160).default(''),
   whatsappNumber: whatsappNumberSchema.default(''),
   phoneDisplay: text(40).default(''),
   phoneLabel: text(40).default('WhatsApp'),

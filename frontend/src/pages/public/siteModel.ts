@@ -85,6 +85,7 @@ export function businessJsonLd(settings: PublicSite['settings'], siteUrl: string
     name: [settings.brandName, settings.brandSubtitle].filter(Boolean).join(' · '),
     url: `${siteUrl}/`,
   };
+  if (settings.slogan) data.slogan = settings.slogan;
   if (image) data.image = image;
   if (settings.whatsappNumber) data.telephone = `+${settings.whatsappNumber}`;
   if (settings.email) data.email = settings.email;

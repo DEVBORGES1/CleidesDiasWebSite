@@ -341,6 +341,7 @@ class SupabaseSettings implements SettingsRepository {
     return siteSettingsSchema.parse({
       brandName: r.brand_name,
       brandSubtitle: r.brand_subtitle,
+      slogan: r.slogan,
       whatsappNumber: r.whatsapp_number,
       phoneDisplay: r.phone_display,
       phoneLabel: r.phone_label,
@@ -371,6 +372,7 @@ class SupabaseSettings implements SettingsRepository {
     const row = compact({
       brand_name: d.brandName,
       brand_subtitle: d.brandSubtitle,
+      slogan: d.slogan,
       whatsapp_number: d.whatsappNumber,
       phone_display: d.phoneDisplay,
       phone_label: d.phoneLabel,

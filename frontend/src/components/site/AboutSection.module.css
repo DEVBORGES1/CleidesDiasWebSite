@@ -100,6 +100,17 @@
   font-style: italic;
   color: var(--price);
 }
+.slogan {
+  margin: 0;
+  padding-left: 18px;
+  border-left: 2px solid var(--gold);
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(19px, 1.8cqi, 23px);
+  line-height: 1.45;
+  color: var(--price);
+  text-wrap: balance;
+}
 .paragraph {
   margin: 0;
   font-size: 15.5px;

@@ -44,6 +44,13 @@ export function SettingsPage() {
               <TextField label="Nome do estúdio" value={s.brandName} maxLength={80} onChange={(brandName) => settings.patch({ brandName })} error={err('brandName')} />
               <TextField label="Subtítulo" value={s.brandSubtitle} maxLength={80} onChange={(brandSubtitle) => settings.patch({ brandSubtitle })} />
             </div>
+            <TextField
+              label="Slogan"
+              value={s.slogan}
+              maxLength={160}
+              onChange={(slogan) => settings.patch({ slogan })}
+              hint="Aparece em destaque na seção “Sobre” e nos dados lidos pelo Google. Deixe em branco para esconder."
+            />
             <div className={uiStyles.field}>
               <span className={uiStyles.label}>
                 Logotipo <span className={uiStyles.labelNote}>· opcional</span>

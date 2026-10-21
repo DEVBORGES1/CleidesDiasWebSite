@@ -9,6 +9,8 @@ import { sectionSchemas } from '@cleides/shared';
 import type { Logger } from 'pino';
 import type { Repositories } from '../repositories/types.js';
 
+const SLOGAN = 'Especialista em capturar o amor em detalhes para eternizá-los em fotografias!';
+
 const ABOUT_IMAGE = {
   assetId: null,
   url: '/images/cleides.jpg',
@@ -133,6 +135,7 @@ export async function seedDemoContent(repos: Repositories, logger?: Logger): Pro
       {
         brandName: 'Cleides Dias',
         brandSubtitle: 'Estúdio Fotográfico',
+        slogan: SLOGAN,
         whatsappNumber: '5549999569245',
         phoneDisplay: '(49) 99956-9245',
         phoneLabel: 'WhatsApp',
@@ -146,7 +149,7 @@ export async function seedDemoContent(repos: Repositories, logger?: Logger): Pro
           package: 'Olá! Tenho interesse no pacote {pacote} do Especial de Natal 2026. Pode me passar as datas disponíveis?',
         },
         footer: {
-          tagline: 'Mais do que fotos, são lembranças para sempre.',
+          tagline: SLOGAN,
           legal:
             '© 2026 Cleides Dias Estúdio Fotográfico · Especial de Natal 2026 · WhatsApp (49) 99956-9245 · @estudiocleidesdias. Fotografias protegidas por direitos autorais — reprodução proibida sem autorização.',
           privacyLabel: 'Política de privacidade',
@@ -154,8 +157,7 @@ export async function seedDemoContent(repos: Repositories, logger?: Logger): Pro
         },
         seo: {
           title: 'Cleides Dias Fotografia · Ensaios de Natal em Videira – SC',
-          description:
-            'Ensaios fotográficos de Natal para bebês, crianças e famílias em Videira – SC. Conheça os pacotes e agende pelo WhatsApp.',
+          description: `${SLOGAN} Ensaios de Natal para bebês, crianças e famílias em Videira – SC.`,
         },
       },
       null,
