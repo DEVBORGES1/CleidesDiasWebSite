@@ -16,6 +16,8 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
+      # Falha com vulnerabilidade alta ou crítica conhecida nas dependências.
+      - run: npm audit --audit-level=high
       - run: npm run build -w @cleides/shared
       - run: npm run lint
       - run: npm run typecheck
@@ -23,6 +25,7 @@ jobs:
       - run: npm run build
         env:
           VITE_API_URL: https://api.exemplo.com/api/v1
+          VITE_SITE_URL: https://site.exemplo.com
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
         env:
