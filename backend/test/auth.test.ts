@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { USER_TOKEN, buildTestApp } from './helpers.js';
 
@@ -51,5 +53,31 @@ describe('autenticação e autorização do painel', () => {
     const { request } = buildTestApp();
     const res = await request[method](url).send({});
     expect(res.status).toBe(401);
+  });
+});
+
+describe('todas as rotas do painel exigem administrador', () => {
+  // Lidas do próprio arquivo de rotas: uma rota nova entra no teste automaticamente.
+  const source = readFileSync(fileURLToPath(new URL('../src/routes/index.ts', import.meta.url)), 'utf8');
+  const adminBlock = source.slice(source.indexOf('export function adminRoutes'));
+  const routes = [...adminBlock.matchAll(/r\.(get|post|put|patch|delete)\('([^']+)'/g)].map(([, method, path]) => ({
+    method: method as 'get' | 'post' | 'put' | 'patch' | 'delete',
+    path: path!.replace(':id', '00000000-0000-4000-8000-000000000000').replace(':key', 'hero'),
+  }));
+
+  it('encontra as rotas do painel', () => {
+    expect(routes.length).toBeGreaterThan(40);
+  });
+
+  it.each([
+    ['sem token', undefined, 401],
+    ['com token de usuário comum', `Bearer ${USER_TOKEN}`, 403],
+  ])('recusa %s', async (_label, authorization, status) => {
+    const { request } = buildTestApp();
+    for (const { method, path } of routes) {
+      const req = request[method](`/api/v1/admin${path}`).send({});
+      const res = await (authorization ? req.set('Authorization', authorization) : req);
+      expect(res.status, `${method.toUpperCase()} ${path}`).toBe(status);
+    }
   });
 });
