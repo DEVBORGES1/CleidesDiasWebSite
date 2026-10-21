@@ -35,7 +35,7 @@
 }
 .header[data-pill] .inner {
   max-width: 1040px;
-  height: 62px;
+  height: 70px;
   padding: 0 10px 0 22px;
   background: rgba(255, 253, 249, 0.86);
   border-color: rgba(184, 146, 79, 0.28);
@@ -197,12 +197,12 @@
 
 .logoImg {
   display: block;
-  height: clamp(44px, 4cqi, 54px);
+  height: clamp(52px, 4.6cqi, 66px);
   width: auto;
-  max-width: 240px;
+  max-width: 280px;
   object-fit: contain;
   transition: height 0.45s ease;
 }
 .header[data-pill] .logoImg {
-  height: 40px;
+  height: 54px;
 }
