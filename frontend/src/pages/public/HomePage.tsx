@@ -27,6 +27,8 @@ import { buildSiteModel, businessJsonLd } from './siteModel';
 import { SiteError, SiteLoading } from './SiteStates';
 import styles from './HomePage.module.css';
 
+const DEFAULT_SHARE_IMAGE = '/images/og-capa.jpg';
+
 export function HomePage() {
   const [params] = useSearchParams();
   const { slug } = useParams();
@@ -135,7 +137,8 @@ function Home({ data, previewRequestedWithoutLogin }: { data: Parameters<typeof 
   const seo = model.settings.seo;
   const title = detail ? `${detail.name} · ${model.settings.brandName}` : seo.title || model.settings.brandName;
   const description = detail ? detail.description || detail.subtitle : seo.description;
-  const shareImage = model.settings.seoImage?.url ?? model.sections.hero.image?.url;
+  // Sem imagem escolhida no painel, vale o card padrão do index.html (o mesmo que o WhatsApp lê).
+  const shareImage = model.settings.seoImage?.url ?? DEFAULT_SHARE_IMAGE;
   const jsonLd = useMemo(
     () => (detail || model.preview ? undefined : businessJsonLd(model.settings, env.siteUrl, absoluteImage(shareImage))),
     [detail, model.preview, model.settings, shareImage],

@@ -63,7 +63,7 @@ export function Seo({ title, description, path, image, noindex, jsonLd }: SeoPro
     upsert('meta[property="og:type"]', meta('property', 'og:type'), 'content', 'website');
     upsert('meta[property="og:locale"]', meta('property', 'og:locale'), 'content', 'pt_BR');
     upsert('meta[property="og:url"]', meta('property', 'og:url'), 'content', url);
-    if (img) {
+    if (img && img !== document.head.querySelector('meta[property="og:image"]')?.getAttribute('content')) {
       // As dimensões e a descrição fixas do index.html valem só para a imagem padrão.
       document.head.querySelectorAll('meta[property^="og:image:"]').forEach((m) => m.remove());
       upsert('meta[property="og:image"]', meta('property', 'og:image'), 'content', img);
