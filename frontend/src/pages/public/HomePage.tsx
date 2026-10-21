@@ -27,7 +27,7 @@ import { buildSiteModel, businessJsonLd } from './siteModel';
 import { SiteError, SiteLoading } from './SiteStates';
 import styles from './HomePage.module.css';
 
-const DEFAULT_SHARE_IMAGE = '/images/og-capa.jpg';
+const DEFAULT_SHARE_IMAGE = '/images/og-card.jpg';
 
 export function HomePage() {
   const [params] = useSearchParams();

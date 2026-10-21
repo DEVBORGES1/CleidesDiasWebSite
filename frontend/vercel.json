@@ -6,6 +6,12 @@
   "rewrites": [
     { "source": "/api/:path*", "destination": "https://srv1388438.hstgr.cloud/cleides/api/:path*" },
     { "source": "/sitemap.xml", "destination": "https://srv1388438.hstgr.cloud/cleides/api/v1/sitemap.xml" },
+    {
+      "source": "/images/og-card.jpg",
+      "has": [{ "type": "header", "key": "user-agent", "value": "(?i).*whatsapp.*" }],
+      "destination": "/images/og-whatsapp.jpg"
+    },
+    { "source": "/images/og-card.jpg", "destination": "/images/og-capa.jpg" },
     { "source": "/((?!assets/|images/|robots.txt|sitemap.xml|favicon|apple-touch-icon).*)", "destination": "/index.html" }
   ],
   "headers": [
@@ -21,6 +27,13 @@
           "key": "Content-Security-Policy",
           "value": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://res.cloudinary.com; connect-src 'self' https:; frame-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'"
         }
+      ]
+    },
+    {
+      "source": "/images/og-card.jpg",
+      "headers": [
+        { "key": "Vary", "value": "User-Agent" },
+        { "key": "Cache-Control", "value": "public, max-age=3600" }
       ]
     },
     {

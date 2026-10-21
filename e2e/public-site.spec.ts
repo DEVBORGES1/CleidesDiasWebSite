@@ -77,8 +77,11 @@ test.describe('site público', () => {
 
   test('metadados de compartilhamento existem no HTML sem JavaScript', async ({ request }) => {
     const html = await (await request.get('/')).text();
-    expect(html).toContain(`<meta property="og:image" content="${WEB_URL}/images/og-capa.jpg"`);
+    expect(html).toContain(`<meta property="og:image" content="${WEB_URL}/images/og-card.jpg"`);
     expect(html).toContain('<link rel="apple-touch-icon"');
-    expect((await request.get('/images/og-capa.jpg')).headers()['content-type']).toContain('image/jpeg');
+    const card = async (userAgent: string) => (await request.get('/images/og-card.jpg', { headers: { 'user-agent': userAgent } })).body();
+    const [wide, whatsapp] = await Promise.all([card('facebookexternalhit/1.1'), card('WhatsApp/2.24.1 A')]);
+    expect(wide.equals(await (await request.get('/images/og-capa.jpg')).body())).toBe(true);
+    expect(whatsapp.equals(await (await request.get('/images/og-whatsapp.jpg')).body())).toBe(true);
   });
 });

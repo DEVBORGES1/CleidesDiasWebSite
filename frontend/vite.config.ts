@@ -1,6 +1,6 @@
 import { fileURLToPath } from 'node:url';
 import react from '@vitejs/plugin-react';
-import { defineConfig, loadEnv, type Plugin, type ProxyOptions } from 'vite';
+import { defineConfig, loadEnv, type Connect, type Plugin, type ProxyOptions } from 'vite';
 
 const trim = (v: string | undefined) => (v ?? '').trim().replace(/\/$/, '');
 
@@ -36,6 +36,25 @@ function htmlEnv(siteUrl: string): Plugin {
   };
 }
 
+/**
+ * Card de compartilhamento: o WhatsApp recebe a versão quadrada (logo e slogan), porque a
+ * miniatura dele corta a imagem num quadrado central; as demais redes recebem o card largo.
+ * Na Vercel isso é feito pelos rewrites do vercel.json; aqui, em desenvolvimento e no preview.
+ */
+function shareCard(): Plugin {
+  const pick: Connect.NextHandleFunction = (req, _res, next) => {
+    if (req.url?.split('?')[0] === '/images/og-card.jpg') {
+      req.url = /whatsapp/i.test(req.headers['user-agent'] ?? '') ? '/images/og-whatsapp.jpg' : '/images/og-capa.jpg';
+    }
+    next();
+  };
+  return {
+    name: 'cleides-share-card',
+    configureServer: (server) => void server.middlewares.use(pick),
+    configurePreviewServer: (server) => void server.middlewares.use(pick),
+  };
+}
+
 /** Em desenvolvimento, `/sitemap.xml` é repassado para a API (como faz o rewrite da Vercel). */
 function sitemapProxy(apiUrl: string): Record<string, ProxyOptions> {
   if (!/^https?:\/\//.test(apiUrl)) return {};
@@ -48,7 +67,7 @@ export default defineConfig(({ mode }) => {
   const apiUrl = trim(env.VITE_API_URL) || 'http://localhost:4000/api/v1';
   const siteUrl = trim(env.VITE_SITE_URL) || 'http://localhost:5173';
   return {
-    plugins: [react(), robotsTxt(siteUrl), htmlEnv(siteUrl)],
+    plugins: [react(), robotsTxt(siteUrl), htmlEnv(siteUrl), shareCard()],
     resolve: {
       alias: [
         { find: /^@cleides\/shared\/utils$/, replacement: fileURLToPath(new URL('../shared/src/utils.ts', import.meta.url)) },

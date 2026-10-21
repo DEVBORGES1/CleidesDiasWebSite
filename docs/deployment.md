@@ -94,8 +94,11 @@ como exige o protocolo). Esse caminho é repassado pelo `vercel.json` para o sit
 (`/api/v1/sitemap.xml`); se o endereço da API mudar, atualize também esse rewrite. Cadastre o site no
 Google Search Console e envie `https://<seu-dominio>/sitemap.xml`.
 
-A imagem padrão de compartilhamento (WhatsApp, Facebook) é `frontend/public/images/og-capa.jpg`
-(1200×630), declarada no `index.html` porque essas plataformas não executam JavaScript.
+A imagem padrão de compartilhamento é declarada no `index.html` (essas plataformas não executam
+JavaScript) como `/images/og-card.jpg`, endereço sem arquivo próprio: o `vercel.json` entrega
+`og-whatsapp.jpg` (600×600, logo e slogan) quando o pedido vem do WhatsApp, cuja miniatura corta a
+imagem num quadrado central, e `og-capa.jpg` (1200×630) para as demais redes. Ao trocar a arte,
+atualize os dois arquivos em `frontend/public/images/`.
 
 ## 5. Checklist de produção
 
