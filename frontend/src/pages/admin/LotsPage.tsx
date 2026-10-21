@@ -1,8 +1,8 @@
 import { CONTENT_LIMITS, addDays, formatDayMonth, formatPrice, lotPriceFor, todayIn, withLotPhases } from '@cleides/shared/utils';
 import type { LotPhase, PriceLot, PublicationStatus } from '@cleides/shared';
 import { useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
-import { Link } from 'react-router';
+import { useEffect, useState } from 'react';
+import { Link, useSearchParams } from 'react-router';
 import { Icon } from '../../components/Icon';
 import { Button, Collapsible, EmptyState, IconButton, MoneyField, StatusPill, SwitchRow, TextField, uiStyles } from '../../components/admin/ui';
 import { useAdmin } from '../../contexts/AdminContext';
@@ -39,6 +39,7 @@ export function LotsPage() {
   const queryClient = useQueryClient();
   const { confirm, toast, refreshSite } = useAdmin();
   const section = useSectionEditor('lots');
+  const [params, setParams] = useSearchParams();
   const [openId, setOpenId] = useState<string | null>(null);
   const [form, setForm] = useState<LotForm | null>(null);
   const [initial, setInitial] = useState('');
@@ -104,6 +105,16 @@ export function LotsPage() {
     setOpenId(null);
     setForm(null);
   }
+
+  // ?abrir=<id> abre um lote (atalho do painel inicial); espera os pacotes para preencher os valores.
+  useEffect(() => {
+    const target = params.get('abrir');
+    if (!target || !query.data || !packagesQuery.data) return;
+    const item = query.data.find((l) => l.id === target);
+    if (item) void open(item);
+    setParams({}, { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params, query.data, packagesQuery.data]);
 
   async function save(): Promise<boolean> {
     if (!form) return true;

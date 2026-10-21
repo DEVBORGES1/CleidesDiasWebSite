@@ -82,7 +82,14 @@ export function FaqPage() {
   }
 
   useEffect(() => {
-    if (params.get('nova') === '1' && query.data) {
+    if (!query.data) return;
+    // ?nova=1 abre o formulário em branco; ?abrir=<id> abre uma pergunta (atalho do painel inicial).
+    const target = params.get('abrir');
+    if (target) {
+      const item = query.data.find((f) => f.id === target);
+      if (item) void open(item);
+      setParams({}, { replace: true });
+    } else if (params.get('nova') === '1') {
       void open(null);
       setParams({}, { replace: true });
     }

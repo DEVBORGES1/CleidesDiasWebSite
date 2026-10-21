@@ -92,7 +92,14 @@ export function StepsPage() {
   }
 
   useEffect(() => {
-    if (params.get('nova') === '1' && query.data) {
+    if (!query.data) return;
+    // ?nova=1 abre o formulário em branco; ?abrir=<id> abre uma etapa (atalho do painel inicial).
+    const target = params.get('abrir');
+    if (target) {
+      const item = query.data.find((s) => s.id === target);
+      if (item) void open(item);
+      setParams({}, { replace: true });
+    } else if (params.get('nova') === '1') {
       void open(null);
       setParams({}, { replace: true });
     }

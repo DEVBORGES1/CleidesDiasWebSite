@@ -5,7 +5,7 @@ import { Icon } from '../../components/Icon';
 import { Alert, Button, Card } from '../../components/admin/ui';
 import { useAdmin } from '../../contexts/AdminContext';
 import { useAuth } from '../../contexts/AuthContext';
-import { useDashboard } from '../../hooks/useAdminData';
+import { useDashboard, useFaq, useGallery, useLots, usePackages, useSteps } from '../../hooks/useAdminData';
 import { adminApi } from '../../services/api';
 import { PageError, PageHeader, PageLoading } from './common';
 import styles from './DashboardPage.module.css';
@@ -16,6 +16,69 @@ const SHORTCUTS = [
   { to: '/admin/duvidas?nova=1', icon: 'help', label: 'Adicionar pergunta' },
   { to: '/admin/como-funciona?nova=1', icon: 'route', label: 'Adicionar etapa' },
 ];
+
+interface DraftRow {
+  key: string;
+  to: string;
+  icon: string;
+  kind: string;
+  name: string;
+}
+
+/** Lista o que está em rascunho, com atalho para editar cada item e para ver tudo na prévia. */
+function DraftsCard({ count }: { count: number }) {
+  const packages = usePackages();
+  const gallery = useGallery();
+  const faq = useFaq();
+  const steps = useSteps();
+  const lots = useLots();
+  const drafts = <T extends { id: string; status: string }>(list: T[] | undefined) => (list ?? []).filter((i) => i.status === 'draft');
+
+  const rows: DraftRow[] = [
+    ...drafts(packages.data).map((p) => ({ key: `p-${p.id}`, to: `/admin/pacotes/${p.id}`, icon: 'sell', kind: 'Pacote', name: p.name })),
+    ...drafts(gallery.data).map((g) => ({ key: `g-${g.id}`, to: `/admin/galeria/${g.id}`, icon: 'photo_library', kind: 'Foto da galeria', name: g.title || 'Foto sem título' })),
+    ...drafts(faq.data).map((f) => ({ key: `f-${f.id}`, to: `/admin/duvidas?abrir=${f.id}`, icon: 'help', kind: 'Pergunta frequente', name: f.question })),
+    ...drafts(steps.data).map((s) => ({ key: `s-${s.id}`, to: `/admin/como-funciona?abrir=${s.id}`, icon: 'route', kind: 'Etapa do atendimento', name: s.title })),
+    ...drafts(lots.data).map((l) => ({ key: `l-${l.id}`, to: `/admin/lotes?abrir=${l.id}`, icon: 'confirmation_number', kind: 'Lote', name: l.name })),
+  ];
+
+  return (
+    <Card
+      title="Em rascunho"
+      description={
+        <>
+          Você tem <strong>{count}</strong> {count === 1 ? 'item em rascunho' : 'itens em rascunho'} que ainda não aparecem no site. Abra um para continuar editando ou veja todos na prévia, onde aparecem
+          marcados.
+        </>
+      }
+    >
+      {rows.length > 0 && (
+        <ul className={styles.drafts}>
+          {rows.map((r) => (
+            <li key={r.key}>
+              <Link to={r.to} className={styles.draft}>
+                <span className={styles.shortcutIcon}>
+                  <Icon name={r.icon} size={20} />
+                </span>
+                <span className={styles.draftText}>
+                  <span className={styles.draftName}>{r.name}</span>
+                  <span className={styles.draftKind}>{r.kind}</span>
+                </span>
+                <Icon name="chevron_right" size={20} color="var(--muted)" />
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
+      <div>
+        <a href="/?preview=1" target="_blank" rel="noopener" className={styles.previewLink}>
+          <Icon name="visibility" size={18} />
+          Ver rascunhos na prévia
+        </a>
+      </div>
+    </Card>
+  );
+}
 
 const greeting = () => {
   const h = new Date().getHours();
@@ -98,11 +161,7 @@ export function DashboardPage() {
               <Link to="/admin/contato">Configurar agora</Link>
             </Alert>
           )}
-          {d.pendingDrafts > 0 && (
-            <Alert icon="edit_note">
-              Você tem <strong>{d.pendingDrafts}</strong> {d.pendingDrafts === 1 ? 'item em rascunho' : 'itens em rascunho'} que ainda não aparecem no site.
-            </Alert>
-          )}
+          {d.pendingDrafts > 0 && <DraftsCard count={d.pendingDrafts} />}
 
           <div className={styles.stats}>
             {stats.map((s) => (
