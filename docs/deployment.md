@@ -1,5 +1,9 @@
 # Implantação em produção
 
+> **Em uso hoje:** frontend na Vercel e API na VPS Hostinger (veja a seção
+> [API na VPS Hostinger](#api-na-vps-hostinger-alternativa-ao-render-em-uso)). As instruções do Render
+> ficam como alternativa.
+
 Arquitetura recomendada:
 
 | Peça | Serviço | Observação |
@@ -85,8 +89,13 @@ Não é preciso criar *upload preset*: os uploads são assinados pela API.
 5. `frontend/vercel.json` já configura: rotas da SPA, cabeçalhos de segurança (CSP, HSTS,
    `X-Frame-Options`…) e cache longo para os arquivos com hash.
 
-O `robots.txt` é gerado no build e aponta para o sitemap dinâmico da API
-(`<VITE_API_URL>/sitemap.xml`). Cadastre o site no Google Search Console e envie esse sitemap.
+O `robots.txt` é gerado no build e aponta para `<VITE_SITE_URL>/sitemap.xml` (endereço absoluto,
+como exige o protocolo). Esse caminho é repassado pelo `vercel.json` para o sitemap dinâmico da API
+(`/api/v1/sitemap.xml`); se o endereço da API mudar, atualize também esse rewrite. Cadastre o site no
+Google Search Console e envie `https://<seu-dominio>/sitemap.xml`.
+
+A imagem padrão de compartilhamento (WhatsApp, Facebook) é `frontend/public/images/og-capa.jpg`
+(1200×630), declarada no `index.html` porque essas plataformas não executam JavaScript.
 
 ## 5. Checklist de produção
 
@@ -120,6 +129,18 @@ O `robots.txt` é gerado no build e aponta para o sitemap dinâmico da API
   também permite backup automático para outro armazenamento nos planos pagos.
 - **Código e migrations:** versionados no GitHub.
 
+### Restauração (testar antes de precisar)
+
+1. Supabase → **Database → Backups**: escolha o backup e restaure (no plano Free não há restauração
+   pelo painel; mantenha o `pg_dump` próprio).
+2. Para restaurar um dump próprio num projeto de teste:
+   `psql "<connection string do projeto de teste>" -f backup.sql`, depois aponte uma API local para ele
+   e confira o site.
+3. Fotos removidas por engano: o Cloudinary guarda versões apenas com *backup* ativado
+   (Settings → Backup). Sem ele, reenvie a partir dos originais do estúdio.
+
+Anote a data do último teste de restauração; backup que nunca foi restaurado não está comprovado.
+
 ## 8. Atualizações
 
 - Mudanças no banco: crie uma nova migration (`npx supabase migration new <nome>`), teste localmente
@@ -135,3 +156,32 @@ A API roda na VPS `72.60.243.98` junto com outros projetos; o `render.yaml` foi 
 - nginx: `https://srv1388438.hstgr.cloud/cleides/` → `127.0.0.1:4000/`. O `frontend/vercel.json` repassa `/api/*` para `/cleides/api/*`, então o navegador usa o mesmo domínio da Vercel (sem CORS) e `VITE_API_URL=/api/v1`.
 - Limpeza de mídia: `cleides-media-cleanup.timer` (diário, 06:15), substitui o cron do Render.
 - Deploy: `./deploy.sh` (após commit) ou o workflow `Deploy API` (usa o segredo `VPS_DEPLOY_KEY`). A chave só executa `/usr/local/bin/deploy-cleides-dias` (instala, builda e reinicia).
+
+### Rollback
+
+- **Frontend:** Vercel → Deployments → escolha a versão anterior → **Instant Rollback** (ou *Promote to
+  Production*).
+- **API:** publique um commit anterior: `git checkout <sha-anterior> && ./deploy.sh`, depois
+  `git checkout main`. O `deploy.sh` envia exatamente o `HEAD` atual.
+- **Banco:** as migrations não são desfeitas automaticamente. Antes de aplicar uma migration que remove
+  ou altera colunas, faça um `pg_dump` e escreva a migration de volta (ou garanta que a versão anterior
+  da API continua compatível com o novo esquema).
+
+### Investigar falhas
+
+- CI vermelho: abra o job no GitHub Actions; falhas do E2E deixam o artefato `playwright-report`
+  (traces abrem com `npx playwright show-trace`).
+- Deploy falhou no health check: `journalctl -u cleides-api -n 200` na VPS; confira o `.env` e se o
+  build terminou (`/usr/local/bin/deploy-cleides-dias` mostra a saída do `npm ci`/`build`).
+- Site no ar mas sem conteúdo: teste `https://<site>/api/v1/health` e `https://<site>/api/v1/site`
+  (o primeiro mostra se a API está de pé; o segundo, se o banco responde).
+
+### nginx (recomendações pendentes na VPS)
+
+- O rate limit da API usa o IP informado pelos proxies (`TRUST_PROXY=2`). Quem chama a VPS
+  **diretamente** (sem passar pela Vercel) consegue forjar `X-Forwarded-For` e escapar do limite.
+  Adicione um limite também no nginx, pelo IP real da conexão (`limit_req_zone $binary_remote_addr …`),
+  com valor folgado, já que todas as visitas legítimas chegam por poucos IPs da Vercel.
+- `server_tokens off;` para não divulgar a versão do nginx.
+- Use um usuário sem privilégios de root para o deploy por SSH (hoje a chave entra como `root`, limitada
+  a um *forced command*).
