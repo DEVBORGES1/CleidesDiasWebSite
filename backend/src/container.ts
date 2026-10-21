@@ -8,12 +8,24 @@ import { createSupabaseRepositories } from './repositories/supabase/index.js';
 import type { Repositories } from './repositories/types.js';
 import { createServices, type Services } from './services/index.js';
 
+/** Tempo máximo de espera por Supabase e Cloudinary: uma falha deles não deixa a requisição pendurada. */
+export const EXTERNAL_TIMEOUT_MS = 10_000;
+
+/** `fetch` que desiste após `ms` (mantendo o cancelamento pedido por quem chamou). */
+export function fetchWithTimeout(ms: number): typeof fetch {
+  return (input, init) => {
+    const timeout = AbortSignal.timeout(ms);
+    return fetch(input, { ...init, signal: init?.signal ? AbortSignal.any([init.signal, timeout]) : timeout });
+  };
+}
+
 /** Monta as dependências reais da aplicação a partir das variáveis de ambiente. */
 export function createContainer(env: Env, logger: Logger): { services: Services; repos: Repositories } {
   const supabase =
     env.SUPABASE_URL && env.SUPABASE_SERVICE_ROLE_KEY
       ? createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, {
           auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
+          global: { fetch: fetchWithTimeout(EXTERNAL_TIMEOUT_MS) },
         })
       : null;
 
@@ -35,6 +47,7 @@ export function createContainer(env: Env, logger: Logger): { services: Services;
         apiKey: env.CLOUDINARY_API_KEY!,
         apiSecret: env.CLOUDINARY_API_SECRET!,
         uploadPrefix: env.CLOUDINARY_UPLOAD_PREFIX,
+        timeoutMs: EXTERNAL_TIMEOUT_MS,
       })
     : new DisabledStorage();
   if (!storage.enabled) logger.warn('Cloudinary não configurado: o envio de fotos ficará indisponível.');

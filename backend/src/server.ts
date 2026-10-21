@@ -27,6 +27,11 @@ const app = createApp({ env, logger, services });
 const server = app.listen(env.PORT, () => {
   logger.info(`API ouvindo em http://localhost:${env.PORT}/api/v1`);
 });
+// Conexões lentas ou paradas não seguram o servidor (os padrões do Node são de 5 minutos).
+server.requestTimeout = 30_000;
+server.headersTimeout = 20_000;
+// Maior que o keepalive do nginx (60s), para o proxy não reutilizar uma conexão já encerrada.
+server.keepAliveTimeout = 65_000;
 
 const shutdown = (signal: string) => {
   logger.info(`${signal} recebido, encerrando...`);

@@ -29,6 +29,8 @@ export interface CloudinaryOptions {
   apiSecret: string;
   /** Apenas para testes automatizados. */
   uploadPrefix?: string;
+  /** Tempo máximo das chamadas à API do Cloudinary. */
+  timeoutMs?: number;
 }
 
 export class CloudinaryStorage implements MediaStorage {
@@ -68,7 +70,7 @@ export class CloudinaryStorage implements MediaStorage {
 
   async getResource(publicId: string): Promise<StoredResource | null> {
     try {
-      const r = await cloudinary.api.resource(publicId, { resource_type: 'image', type: 'upload' });
+      const r = await cloudinary.api.resource(publicId, { resource_type: 'image', type: 'upload', timeout: this.options.timeoutMs });
       return { url: r.secure_url, format: r.format, width: r.width, height: r.height, bytes: r.bytes };
     } catch (err) {
       const code = (err as { error?: { http_code?: number }; http_code?: number }).error?.http_code ?? (err as { http_code?: number }).http_code;
@@ -78,7 +80,9 @@ export class CloudinaryStorage implements MediaStorage {
   }
 
   async destroy(publicId: string): Promise<void> {
-    const r = (await cloudinary.uploader.destroy(publicId, { resource_type: 'image', invalidate: true })) as { result?: string };
+    // `timeout` é aceito pelo SDK em tempo de execução, mas falta na tipagem de `destroy`.
+    const options: { resource_type: 'image'; invalidate: boolean } = { resource_type: 'image', invalidate: true, ...{ timeout: this.options.timeoutMs } };
+    const r = (await cloudinary.uploader.destroy(publicId, options)) as { result?: string };
     if (r.result !== 'ok' && r.result !== 'not found') throw new Error(`Cloudinary destroy retornou: ${r.result}`);
   }
 }
