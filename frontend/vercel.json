@@ -5,7 +5,8 @@
   "buildCommand": "npm run build",
   "rewrites": [
     { "source": "/api/:path*", "destination": "https://srv1388438.hstgr.cloud/cleides/api/:path*" },
-    { "source": "/((?!assets/|images/|robots.txt|favicon).*)", "destination": "/index.html" }
+    { "source": "/sitemap.xml", "destination": "https://srv1388438.hstgr.cloud/cleides/api/v1/sitemap.xml" },
+    { "source": "/((?!assets/|images/|robots.txt|sitemap.xml|favicon|apple-touch-icon).*)", "destination": "/index.html" }
   ],
   "headers": [
     {

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { makeLots, makePackage, makeSite } from '../../test/fixtures';
-import { buildSiteModel } from './siteModel';
+import { buildSiteModel, businessJsonLd } from './siteModel';
 
 describe('modelo do site público', () => {
   it('monta links do WhatsApp e do Instagram a partir das configurações', () => {
@@ -40,5 +40,24 @@ describe('modelo do site público', () => {
   it('sem lotes, vale o preço promocional', () => {
     const mini = makePackage('mini', 'Mini Natal', 350, { promoPrice: 320 });
     expect(buildSiteModel(makeSite({ packages: [mini] })).priceOf(mini)).toMatchObject({ amount: 320, old: 350, lot: null });
+  });
+
+  it('dados estruturados usam só o que foi cadastrado', () => {
+    const { settings } = makeSite();
+    expect(businessJsonLd(settings, 'https://site.test')).toEqual({
+      '@context': 'https://schema.org',
+      '@type': 'ProfessionalService',
+      name: 'Cleides Dias',
+      url: 'https://site.test/',
+      telephone: '+5549999569245',
+      sameAs: ['https://www.instagram.com/estudio/'],
+    });
+    settings.city = 'Videira – SC';
+    settings.instagram = '';
+    expect(businessJsonLd(settings, 'https://site.test', 'https://site.test/x.jpg')).toMatchObject({
+      image: 'https://site.test/x.jpg',
+      address: { '@type': 'PostalAddress', addressLocality: 'Videira', addressRegion: 'SC', addressCountry: 'BR' },
+    });
+    expect(businessJsonLd(settings, 'https://site.test')).not.toHaveProperty('sameAs');
   });
 });

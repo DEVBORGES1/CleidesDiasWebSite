@@ -71,3 +71,26 @@ export function buildSiteModel(site: PublicSite) {
 }
 
 export type SiteModel = ReturnType<typeof buildSiteModel>;
+
+/**
+ * Dados estruturados (schema.org) do estúdio, montados só com o que foi cadastrado no painel:
+ * nada de endereço, avaliações ou preços inventados.
+ */
+export function businessJsonLd(settings: PublicSite['settings'], siteUrl: string, image?: string): Record<string, unknown> {
+  const [locality, region] = settings.city.split(/\s+[–-]\s+/).map((s) => s.trim());
+  const sameAs = [instagramUrl(settings.instagram), ...settings.socialLinks.map((l) => l.url)].filter(Boolean);
+  const data: Record<string, unknown> = {
+    '@context': 'https://schema.org',
+    '@type': 'ProfessionalService',
+    name: [settings.brandName, settings.brandSubtitle].filter(Boolean).join(' · '),
+    url: `${siteUrl}/`,
+  };
+  if (image) data.image = image;
+  if (settings.whatsappNumber) data.telephone = `+${settings.whatsappNumber}`;
+  if (settings.email) data.email = settings.email;
+  if (locality) {
+    data.address = { '@type': 'PostalAddress', addressLocality: locality, ...(region ? { addressRegion: region } : {}), addressCountry: 'BR' };
+  }
+  if (sameAs.length) data.sameAs = [...new Set(sameAs)];
+  return data;
+}

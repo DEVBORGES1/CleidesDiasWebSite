@@ -3,7 +3,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router';
 import { Icon } from '../../components/Icon';
-import { Seo } from '../../components/Seo';
+import { absoluteImage, Seo } from '../../components/Seo';
 import { AboutSection } from '../../components/site/AboutSection';
 import { ContactSection } from '../../components/site/ContactSection';
 import { FaqSection } from '../../components/site/FaqSection';
@@ -21,8 +21,9 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useCompact, useReducedMotion } from '../../hooks/useMediaQuery';
 import { scrollToSection, useParallax, usePreviewBridge, useReveal, useScrollState, type SectionId } from '../../hooks/useSiteEffects';
 import { siteQueryKey, useSite } from '../../hooks/useSite';
+import { env } from '../../lib/env';
 import { NotFoundPage } from './NotFoundPage';
-import { buildSiteModel } from './siteModel';
+import { buildSiteModel, businessJsonLd } from './siteModel';
 import { SiteError, SiteLoading } from './SiteStates';
 import styles from './HomePage.module.css';
 
@@ -134,6 +135,11 @@ function Home({ data, previewRequestedWithoutLogin }: { data: Parameters<typeof 
   const seo = model.settings.seo;
   const title = detail ? `${detail.name} · ${model.settings.brandName}` : seo.title || model.settings.brandName;
   const description = detail ? detail.description || detail.subtitle : seo.description;
+  const shareImage = model.settings.seoImage?.url ?? model.sections.hero.image?.url;
+  const jsonLd = useMemo(
+    () => (detail || model.preview ? undefined : businessJsonLd(model.settings, env.siteUrl, absoluteImage(shareImage))),
+    [detail, model.preview, model.settings, shareImage],
+  );
 
   return (
     <div ref={rootRef} className={styles.root}>
@@ -141,8 +147,9 @@ function Home({ data, previewRequestedWithoutLogin }: { data: Parameters<typeof 
         title={title}
         description={description}
         path={detail ? `/pacotes/${detail.slug}` : '/'}
-        image={detail?.cover?.url ?? model.settings.seoImage?.url ?? model.sections.hero.image?.url}
+        image={detail?.cover?.url ?? shareImage}
         noindex={model.preview}
+        jsonLd={jsonLd}
       />
       <a href="#conteudo" className="skip-link">
         Pular para o conteúdo

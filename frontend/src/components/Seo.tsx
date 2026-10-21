@@ -8,6 +8,8 @@ interface SeoProps {
   path?: string;
   image?: string | null;
   noindex?: boolean;
+  /** Dados estruturados (JSON-LD) da página. */
+  jsonLd?: Record<string, unknown>;
 }
 
 /** Cria ou atualiza uma tag do <head> (sem duplicar as que vêm do index.html). */
@@ -31,12 +33,19 @@ const meta = (key: 'name' | 'property', name: string) => () => {
   return m;
 };
 
-/** Título e metadados de cada página (título, descrição, canonical, Open Graph e robots). */
-export function Seo({ title, description, path, image, noindex }: SeoProps) {
+/** URL absoluta da imagem de compartilhamento (imagens locais ganham o domínio do site). */
+export function absoluteImage(image: string | null | undefined): string | undefined {
+  if (!image) return undefined;
+  return image.startsWith('/') ? `${env.siteUrl}${image}` : cdnUrl(image, 1200);
+}
+
+/** Título e metadados de cada página (título, descrição, canonical, Open Graph, robots e JSON-LD). */
+export function Seo({ title, description, path, image, noindex, jsonLd }: SeoProps) {
+  const ld = jsonLd ? JSON.stringify(jsonLd) : undefined;
   useEffect(() => {
     document.title = title;
     const url = path !== undefined ? `${env.siteUrl}${path}` : undefined;
-    const img = image ? (image.startsWith('/') ? `${env.siteUrl}${image}` : cdnUrl(image, 1200)) : undefined;
+    const img = absoluteImage(image);
     upsert('meta[name="description"]', meta('name', 'description'), 'content', description || undefined);
     upsert('meta[name="robots"]', meta('name', 'robots'), 'content', noindex ? 'noindex, nofollow' : undefined);
     upsert(
@@ -54,8 +63,22 @@ export function Seo({ title, description, path, image, noindex }: SeoProps) {
     upsert('meta[property="og:type"]', meta('property', 'og:type'), 'content', 'website');
     upsert('meta[property="og:locale"]', meta('property', 'og:locale'), 'content', 'pt_BR');
     upsert('meta[property="og:url"]', meta('property', 'og:url'), 'content', url);
-    upsert('meta[property="og:image"]', meta('property', 'og:image'), 'content', img);
-    upsert('meta[name="twitter:card"]', meta('name', 'twitter:card'), 'content', img ? 'summary_large_image' : 'summary');
-  }, [title, description, path, image, noindex]);
+    if (img) {
+      // As dimensões e a descrição fixas do index.html valem só para a imagem padrão.
+      document.head.querySelectorAll('meta[property^="og:image:"]').forEach((m) => m.remove());
+      upsert('meta[property="og:image"]', meta('property', 'og:image'), 'content', img);
+    }
+    upsert('meta[name="twitter:card"]', meta('name', 'twitter:card'), 'content', 'summary_large_image');
+    let script = document.head.querySelector<HTMLScriptElement>('script[type="application/ld+json"]');
+    if (!ld) script?.remove();
+    else {
+      if (!script) {
+        script = document.createElement('script');
+        script.type = 'application/ld+json';
+        document.head.appendChild(script);
+      }
+      script.textContent = ld;
+    }
+  }, [title, description, path, image, noindex, ld]);
   return null;
 }

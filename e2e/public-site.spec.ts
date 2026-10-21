@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { WEB_URL } from './helpers';
 
 test.describe('site público', () => {
   test('carrega o conteúdo vindo da API com SEO básico', async ({ page }) => {
@@ -9,6 +10,9 @@ test.describe('site público', () => {
     await expect(page.getByRole('heading', { name: 'Mini Natal' })).toBeVisible();
     await expect(page.getByText('Mais escolhido')).toBeVisible();
     await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /Videira/);
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', `${WEB_URL}/`);
+    const ld = JSON.parse((await page.locator('script[type="application/ld+json"]').textContent()) ?? '{}');
+    expect(ld).toMatchObject({ '@type': 'ProfessionalService', address: { addressLocality: 'Videira', addressCountry: 'BR' } });
   });
 
   test('abre os detalhes do pacote com URL própria e botão do WhatsApp', async ({ page }) => {
@@ -59,12 +63,22 @@ test.describe('site público', () => {
     await expect(page.locator('[data-reveal]').last()).toHaveCSS('opacity', '0');
   });
 
-  test('robots.txt aponta o sitemap gerado pela API', async ({ request }) => {
+  test('robots.txt aponta o sitemap gerado pela API, com endereço absoluto', async ({ request }) => {
     const robots = await (await request.get('/robots.txt')).text();
     expect(robots).toContain('Disallow: /admin');
     const sitemapUrl = /Sitemap: (.+)/.exec(robots)?.[1];
-    expect(sitemapUrl).toBeTruthy();
-    const sitemap = await (await request.get(sitemapUrl!)).text();
+    expect(sitemapUrl).toBe(`${WEB_URL}/sitemap.xml`);
+    const res = await request.get(sitemapUrl!);
+    expect(res.headers()['content-type']).toContain('application/xml');
+    const sitemap = await res.text();
     expect(sitemap).toContain('/pacotes/mini-natal');
+    expect(sitemap).not.toContain('/admin');
+  });
+
+  test('metadados de compartilhamento existem no HTML sem JavaScript', async ({ request }) => {
+    const html = await (await request.get('/')).text();
+    expect(html).toContain(`<meta property="og:image" content="${WEB_URL}/images/og-capa.jpg"`);
+    expect(html).toContain('<link rel="apple-touch-icon"');
+    expect((await request.get('/images/og-capa.jpg')).headers()['content-type']).toContain('image/jpeg');
   });
 });
