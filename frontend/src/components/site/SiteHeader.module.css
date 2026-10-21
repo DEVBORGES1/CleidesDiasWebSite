@@ -80,7 +80,8 @@
   line-height: 1;
   letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: var(--gold);
+  /* Texto de 8px: precisa do tom mais escuro para manter contraste legível. */
+  color: var(--primary);
   white-space: nowrap;
 }
 
