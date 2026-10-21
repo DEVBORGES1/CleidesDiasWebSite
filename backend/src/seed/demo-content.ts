@@ -112,7 +112,6 @@ export const DEMO_SECTIONS: SiteSections = {
   }),
   legal: sectionSchemas.legal.parse({
     privacyText:
-      'Este texto é um modelo e deve ser revisado pelo estúdio antes da publicação.\n\n' +
       'O estúdio Cleides Dias Fotografia respeita a sua privacidade. Este site não possui formulários de cadastro: o contato acontece diretamente pelo WhatsApp ou Instagram, e as informações trocadas nesses canais são usadas apenas para responder ao seu pedido, organizar o agendamento e entregar as fotografias.\n\n' +
       'Tratamento de dados\n\n' +
       '- Os dados compartilhados na conversa (nome, telefone e informações do ensaio) são usados somente para o atendimento.\n' +
